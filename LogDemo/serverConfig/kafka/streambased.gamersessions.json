@@ -1,0 +1,45 @@
+{
+    "tableName": "gamersessions",
+    "schemaName": "streambased",
+    "topicName": "gamersessions",
+    "message": {
+        "dataFormat": "json",
+        "fields": [
+            {
+                "name": "unindexed_name",
+                "mapping": "name",
+                "type": "VARCHAR"
+            },
+            {
+                "name": "name",
+                "mapping": "name",
+                "type": "VARCHAR"
+            },
+            {
+                "name": "game",
+                "mapping": "game",
+                "type": "VARCHAR"
+            },
+            {
+                "name": "sessionTimeMins",
+                "mapping": "sessionTimeMins",
+                "type": "INT"
+            },
+            {
+                "name": "rating",
+                "mapping": "rating",
+                "type": "INT"
+            },
+            {
+                "name": "countryCode",
+                "mapping": "countryCode",
+                "type": "VARCHAR"
+            },
+            {
+                "name": "isOnlineSession",
+                "mapping": "isOnlineSession",
+                "type": "BOOLEAN"
+            }
+        ]
+    }
+}
