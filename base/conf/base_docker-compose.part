@@ -1,5 +1,3 @@
-version: '3.7'
-services:
   zookeeper:
     image: "confluentinc/cp-zookeeper:7.5.0"
     hostname: zookeeper
@@ -59,68 +57,3 @@ services:
       SCHEMA_REGISTRY_LISTENERS: "http://0.0.0.0:8081"
       SCHEMA_REGISTRY_KAFKASTORE_TOPIC: _schemas
       SCHEMA_REGISTRY_SCHEMA_REGISTRY_GROUP_ID: schema-registry
-
-
-  
-    
-
-  logging-client:
-    image: local/streambased-base:latest 
-    hostname: logging-client 
-    container_name: logging-client
-    command: sleep infinity
-    volumes:
-      - type: bind
-        source: "./lib"
-        target: /opt/streambased
-        read_only: true
-      - type: bind
-        source: "./logConsumer"
-        target: /etc/clientConfig
-        read_only: true
-      - type: bind
-        source: "./logConsumer/tools-log4j.properties"
-        target: /kafka_2.13-3.6.1/config/tools-log4j.properties
-        read_only: true
-    environment:
-      STREAMBASED_APPENDER_CONFIG: /etc/clientConfig/streambasedAppender.properties
-      CLASSPATH: /opt/streambased/streambased-appender-1.0.jar
-
-  indexServer:
-    image: streambased/streambased-indexer:latest
-    hostname: indexServer
-    platform: linux/amd64
-    volumes:
-      - type: bind
-        source: "./serverConfig"
-        target: /etc/streambased
-        read_only: true
-    ports:
-      - "8084:8084"
-
-  streambased-server:
-    image: streambased/streambased-server-standalone:latest
-    hostname: streambased-server
-    platform: linux/amd64
-    ports:
-      - 8080:8080
-    volumes:
-      - type: bind
-        source: "./serverConfig"
-        target: /etc/streambased/etc
-        read_only: true
-
-  superset:
-    build:
-      context: ./superset
-      dockerfile: Dockerfile
-    container_name: superset
-    platform: linux/amd64
-    environment:
-      - ADMIN_USERNAME=admin
-      - ADMIN_EMAIL=admin@superset.com
-      - ADMIN_PASSWORD=admin
-    ports:
-      - '8088:8088'
-
-
