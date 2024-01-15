@@ -2,7 +2,7 @@
 
 # This script builds a docker-compose from the base .part file and a supplied demo .part file
 
-if [[ $# -ne 1 ]]; then
+if [[ $# -ne 2 ]]; then
     echo "This script requires 2 parameters: <demo part file> <output file>"
     exit 1
 fi
@@ -18,7 +18,7 @@ echo "version: '3.7'" > $OUTPUT_FILE
 echo "services:" >> $OUTPUT_FILE
 
 # now base
-cat ../conf/base_docker_compose.part >> $OUTPUT_FILE
+cat ../conf/base_docker-compose.part >> $OUTPUT_FILE
 
 # now demo
 cat $DEMO_PART >> $OUTPUT_FILE

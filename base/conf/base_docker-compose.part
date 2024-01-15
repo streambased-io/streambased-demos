@@ -41,7 +41,6 @@
       KAFKA_AUTHORIZER_CLASS_NAME: kafka.security.authorizer.AclAuthorizer
       KAFKA_ALLOW_EVERYONE_IF_NO_ACL_FOUND: true
 
-
   schema-registry:
     image: confluentinc/cp-schema-registry:7.5.0
     hostname: schema-registry

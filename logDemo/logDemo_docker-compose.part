@@ -1,5 +1,5 @@
   logging-client:
-    image: local/streambased-base:latest 
+    image: local/streambased-demo-base:latest
     hostname: logging-client 
     container_name: logging-client
     command: sleep infinity
@@ -56,5 +56,3 @@
       - ADMIN_PASSWORD=admin
     ports:
       - '8088:8088'
-
-
