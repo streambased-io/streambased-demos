@@ -9,6 +9,7 @@ ENV ADMIN_EMAIL $ADMIN_EMAIL
 ENV ADMIN_PASSWORD $ADMIN_PASSWORD
 
 COPY ./superset-init.sh /superset-init.sh
+COPY ./add_database.sh /add_database.sh
 
 COPY superset_config.py /app/
 ENV SUPERSET_CONFIG_PATH /app/superset_config.py

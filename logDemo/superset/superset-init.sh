@@ -9,5 +9,8 @@ superset db upgrade
 # setup roles and permissions
 superset superset init
 
+# background db add script
+/bin/sh -c /add_database.sh &
+
 # Starting server
 /bin/sh -c /usr/bin/run-server.sh

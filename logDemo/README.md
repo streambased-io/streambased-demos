@@ -62,30 +62,9 @@ Leave these 2 processes running throughout the demo
 
 Now we can query the collected data and demonstrate the Streambased effect. 
 
-From a web browser navigate to `localhost:8088` and use the user `admin`  and password `admin` to login. 
+From a web browser navigate to `localhost:8088`. 
 
-## Step 6: Establish a connection to Streambased
-
-From Apache Superset choose `Settings -> Database Connections` and click `+ Database`
-
-Streambased is 100% Trino compatible so from the dropdown marked `Choose a database` select `Trino`
-
-Add the following in `SQLALCHEMY URI`
-
-```bash
-trino://streambased-server:8080/kafka
-```
-
-and click `Connect`
-
-## Step 7: Configure the connection
-
-As we wish to use the Streambased enhancements to Trino in the demo we must enable more than simple SELECT syntax in 
-Superset, to do this hover over the created Streambased connection and click the edit button on the right.
-
-Next go to `Advanced -> SQL Lab` and tick `Allow DML` before clicking `Finish`
-
-## Step 8: Query with Streambased
+## Step 6: Query with Streambased
 
 Next from the menu at the top select `SQL -> SQL Lab`, you will see a familiar SQL query interface. In the query entry 
 area add the following:
@@ -97,7 +76,7 @@ select * from logs;
 
 and click `RUN`
 
-## Step 9: See the Streambased advantage
+## Step 7: See the Streambased advantage
 
 To really see the advantage of Streambased we must constrain our queries by adding `WHERE` cluaes. Make a note of the 
 `timemin` and `timesecond` values from the query above and run the following new query:
@@ -109,7 +88,10 @@ select * from logs where timemin=<your timemin value> and timesecond=<your times
 
 This query should run very fast (remember to turn the LIMIT to 100000 to make sure you get all results).
 
-## Step 10: Compare with no Streambased acceleration
+Note: Streambased is designed to operate on high volumes of data. We recommend to wait until the `logs` table has 
+accumulated at least 1m rows to make the Streambased acceleration effect pronounced.
+
+## Step 8: Compare with no Streambased acceleration
 
 You can see how long the query will take without Streambased by disabling acceleration. Run the following to disable 
 acceleration and then run the query above:
@@ -126,11 +108,11 @@ To re-enable acceleration run:
 set session use_streambased=true;
 ```
 
-## Step 11: Explore!
+## Step 9: Explore!
 
 Feel free to run other queries against this dataset with or without Streambased acceleration enabled
 
-## Step 12: Tear down
+## Step 10: Tear down
 
 To complete the demo run the following. This will stop and remove all demo resources:
 
