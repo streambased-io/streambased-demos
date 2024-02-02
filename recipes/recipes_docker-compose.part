@@ -1,0 +1,33 @@
+  indexServer:
+    image: streambased/streambased-indexer:latest
+    hostname: indexServer
+    platform: linux/amd64
+    volumes:
+      - type: bind
+        source: "./serverConfig"
+        target: /etc/streambased
+        read_only: true
+    ports:
+      - '8084:8084'
+
+  streambased-server:
+    image: streambased/streambased-server-standalone:latest
+    hostname: streambased-server
+    platform: linux/amd64
+    ports:
+      - '8080:8080'
+    volumes:
+      - type: bind
+        source: "./serverConfig"
+        target: /etc/streambased/etc
+        read_only: true
+
+  jupyter:
+    build:
+      context: ./jupyter
+      dockerfile: Dockerfile
+    container_name: jupyter
+    platform: linux/amd64
+    command: sleep infinity
+    ports:
+      - '8888:8888'
