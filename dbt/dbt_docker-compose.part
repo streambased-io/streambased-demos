@@ -1,0 +1,36 @@
+  indexServer:
+    image: streambased/streambased-indexer:latest
+    hostname: indexServer
+    platform: linux/amd64
+    volumes:
+      - type: bind
+        source: "./serverConfig"
+        target: /etc/streambased
+        read_only: true
+    ports:
+      - '8084:8084'
+
+  streambased-server:
+    image: streambased/streambased-server-standalone:latest
+    hostname: streambased-server
+    platform: linux/amd64
+    ports:
+      - '8080:8080'
+    volumes:
+      - type: bind
+        source: "./serverConfig"
+        target: /etc/streambased/etc
+        read_only: true
+
+  dbt:
+    build:
+      context: ./dbt
+      dockerfile: Dockerfile
+    container_name: dbt
+    platform: linux/amd64
+    command: sleep infinity
+    volumes:
+      - type: bind
+        source: "./dbtConfig"
+        target: /etc/dbtConfig
+        read_only: true

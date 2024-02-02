@@ -3,7 +3,7 @@
 # This script builds a docker-compose from the base .part file and a supplied demo .part file
 
 if [[ $# -ne 3 ]]; then
-    echo "This script requires 2 parameters: <demo part file> <output file>"
+    echo "This script requires 3 parameters: <demo part file> <output file> <ignore base>"
     exit 1
 fi
 
