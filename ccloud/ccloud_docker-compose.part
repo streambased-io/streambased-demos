@@ -7,6 +7,10 @@
         source: "./serverConfig"
         target: /etc/streambased
         read_only: true
+      - type: bind
+        source: "./snapshot"
+        target: /etc/streambased_data/snapshot
+        read_only: true
     ports:
       - '8084:8084'
 
