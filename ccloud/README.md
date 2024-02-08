@@ -52,16 +52,13 @@ You should see an output ending something like this:
 "93000-93999","94000-94999","95000-95999","96000-96999","97000-97999","98000-98999","99000-99999"]
 ```
 
-Note: depending on your proximity to the Kafka environment (located in California) it can take up to 90 seconds for the 
-index server to load.
-
-## Step 5: Open superset
+## Step 4: Open superset
 
 Now we can query the collected data and demonstrate the Streambased effect. 
 
 From a web browser navigate to `localhost:8088`. 
 
-## Step 6: Query with Streambased
+## Step 5: Query with Streambased
 
 Next from the menu at the top select `SQL -> SQL Lab`, you will see a familiar SQL query interface. In the query entry 
 area add the following:
@@ -73,7 +70,7 @@ select * from customers where name='TOM SCOTT';
 
 and click `RUN`
 
-## Step 8: Compare with no Streambased acceleration
+## Step 6: Compare with no Streambased acceleration
 
 You can see how long the query will take without Streambased by disabling acceleration. Run the following to disable 
 acceleration and then run the query above:
@@ -90,11 +87,11 @@ To re-enable acceleration run:
 set session use_streambased=true;
 ```
 
-## Step 9: Explore!
+## Step 7: Explore!
 
 Feel free to run other queries against this dataset with or without Streambased acceleration enabled
 
-## Step 10: Tear down
+## Step 8: Tear down
 
 To complete the demo run the following. This will stop and remove all demo resources:
 
@@ -105,5 +102,5 @@ docker-compsoe rm
 
 ## Summary
 
-In this demo we have introduced Streambased acceleration to a simple log collection pipeline and reaped the benefits in 
-adhoc SQL queries against the log dataset.
+In this demo we have introduced Streambased acceleration to a data set hosted in Confluent Cloud 
+adhoc SQL queries against the customers dataset.
