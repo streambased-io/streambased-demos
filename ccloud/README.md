@@ -105,5 +105,5 @@ docker-compsoe rm
 
 ## Summary
 
-In this demo we have introduced Streambased acceleration to a simple log collection pipeline and reaped the benefits in 
-adhoc SQL queries against the log dataset.
+In this demo we have introduced Streambased acceleration to a simple topic in Confluent Cloud and reaped the benefits in 
+adhoc SQL queries against the dataset.
