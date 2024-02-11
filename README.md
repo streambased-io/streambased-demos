@@ -6,4 +6,4 @@ This repository holds public demos of Streambased technology
 case.
 2. ccloud - A demo using Confluent Cloud to host a dataset and Streambased to query it.
 3. dbt - A demo leveraging Streambased to provide access to Kafka data via DBT
-4. recipes - An example usage of Streambased for exploring and training a classifier
+4. aiven - A demo using Aiven to host a dataset and Streambased to query it.
