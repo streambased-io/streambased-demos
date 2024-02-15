@@ -2,3 +2,5 @@
 **DS_Store
 **.jks
 .idea
+**.joblib
+**.ipynb_checkpoints**
