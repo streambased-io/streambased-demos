@@ -31,3 +31,8 @@
     command: sleep infinity
     ports:
       - '8888:8888'
+    volumes:
+      - type: bind
+        source: "./code"
+        target: /code
+        read_only: false

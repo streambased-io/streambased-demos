@@ -7,7 +7,8 @@ RUN pip install sqlalchemy-trino
 RUN pip install pandas
 RUN pip install -U Cython
 RUN pip install numpy scipy scikit-learn matplotlib
-RUN pip install scikit-multiflow
 RUN pip install river
+RUN pip install joblib 
+RUN mkdir /code
 
 ENTRYPOINT jupyter lab --ip='*' --port=8888 --no-browser --NotebookApp.token='Streambased' --allow-root

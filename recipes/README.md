@@ -85,14 +85,11 @@ Run the following:
 
 ## Step 6: Performing Data Modelling and Prediction
 
-Once the data has been retrieved from the query, the next step involves data modeling and prediction using machine learning algorithms. To facilitate this process, two files have been provided:
+Once the data has been retrieved from the query, the next step involves data modeling and prediction using machine learning algorithms. To facilitate this process, two files have been provided in your jupyter docker container at /code:
 
 1. **modelling.ipynb**: This Jupyter Notebook contains the code for data modeling. It includes various machine learning algorithms and techniques to analyze the data, build models, and evaluate their performance.
 
 2. **predictor.ipynb**: This Jupyter Notebook is responsible for making predictions based on the models created in the modeling phase. It takes input data and applies the trained models to generate predictions.
-
-These files are located under the `code` directory and can be executed sequentially to perform data modeling and prediction tasks.
-
 
 ## Step 7: Tear down
 
