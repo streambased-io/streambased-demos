@@ -30,35 +30,15 @@ To bring up the environment run:
 docker-compose up -d
 ```
 
-## Step 3: ensure indexes have been loaded
-
-You can use the Streambased REST API to determine whether indexes have been loaded for our cloud dataset. Query this 
-API using the command below:
-
-```bash
-curl localhost:8084/surfboards/customers_name/customers/0
-```
-
-You should see an output ending something like this:
-
-```
-...
-"859276-860275","86000-86999","860276-861275","861276-862275","862276-863275","863276-864275","864276-865275","865276-866275",
-"866276-867275","867276-868275","868276-869275","869276-870275","87000-87999","870276-871275","871276-872275","872276-873275",
-"873276-874275","874276-875275","875276-876275","876276-877275","877276-878275","878276-879275","879276-880275","88000-88999",
-"880276-881275","881276-882275","882276-883275","883276-884275","884276-885275","885276-886275","886276-887275","887276-888275",
-"888276-889275","889276-890275","89000-89999","890276-891275","891276-892275","892276-893275","893276-894275","894276-895275",
-"895276-896275","896276-897275","897276-898275","898276-899275","9000-9999","90000-90999","91000-91999","92000-92999",
-"93000-93999","94000-94999","95000-95999","96000-96999","97000-97999","98000-98999","99000-99999"]
-```
-
-## Step 4: Open superset
+## Step 3: Open superset
 
 Now we can query the collected data and demonstrate the Streambased effect. 
 
-From a web browser navigate to `localhost:8088`. 
+From a web browser navigate to `localhost:8088`.
 
-## Step 5: Query with Streambased
+Log in with credentials `admin:admin`
+
+## Step 4: Query with Streambased
 
 Next from the menu at the top select `SQL -> SQL Lab`, you will see a familiar SQL query interface. In the query entry 
 area add the following:
@@ -70,7 +50,7 @@ select * from customers where name='TOM SCOTT';
 
 and click `RUN`
 
-## Step 6: Compare with no Streambased acceleration
+## Step 5: Compare with no Streambased acceleration
 
 You can see how long the query will take without Streambased by disabling acceleration. Run the following to disable 
 acceleration and then run the query above:
@@ -87,11 +67,11 @@ To re-enable acceleration run:
 set session use_streambased=true;
 ```
 
-## Step 7: Explore!
+## Step 6: Explore!
 
 Feel free to run other queries against this dataset with or without Streambased acceleration enabled
 
-## Step 8: Tear down
+## Step 7: Tear down
 
 To complete the demo run the following. This will stop and remove all demo resources:
 
