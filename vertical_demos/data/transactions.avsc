@@ -1,0 +1,38 @@
+{
+          "name": "transaction",
+          "type": "record",
+          "fields": [
+              {
+                "name":"name",
+                "type":"string"
+              },
+              {
+                "name":"transactionId",
+                "type":"string"
+              },
+              {
+                "name":"timestamp",
+                "type":"long"
+              },
+              {
+                "name":"accountId",
+                "type":"int"
+              },
+              {
+                "name":"depositAmount",
+                "type":"double"
+              },
+              {
+                "name":"depositLatitude",
+                "type":"int"
+              },
+              {
+                "name":"depositLongitude",
+                "type":"int"
+              },
+              {
+                "name":"depositReason",
+                "type":"string"
+              }
+          ]
+      }

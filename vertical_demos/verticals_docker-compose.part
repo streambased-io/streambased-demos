@@ -49,3 +49,16 @@
       - ADMIN_PASSWORD=admin
     ports:
       - '8088:8088'
+
+  pumba:
+    image: gaiaadm/pumba:master
+    profiles: [netem]
+    depends_on:
+      - kafka1
+    volumes:
+      - type: bind
+        source: "/var/run/docker.sock"
+        target: "/var/run/docker.sock"
+        read_only: false
+    command:
+      netem --duration 10000m --tc-image gaiadocker/iproute2 delay vertical_demos-kafka1-1 --time 3 --jitter 0
