@@ -9,5 +9,6 @@ RUN pip install -U Cython
 RUN pip install numpy scipy scikit-learn matplotlib
 RUN pip install scikit-multiflow
 RUN pip install river
+RUN  apt-get install graphviz
 
 ENTRYPOINT jupyter lab --ip='*' --port=8888 --no-browser --NotebookApp.token='Streambased' --allow-root
