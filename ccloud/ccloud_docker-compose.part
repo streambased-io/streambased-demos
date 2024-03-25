@@ -1,21 +1,5 @@
-  indexServer:
-    image: streambased/streambased-indexer:latest
-    hostname: indexServer
-    platform: linux/amd64
-    volumes:
-      - type: bind
-        source: "./serverConfig"
-        target: /etc/streambased
-        read_only: true
-      - type: bind
-        source: "./snapshot"
-        target: /etc/streambased_data/snapshot
-        read_only: true
-    ports:
-      - '8084:8084'
-
   streambased-server:
-    image: streambased/streambased-server-standalone:latest
+    image: streambased/streambased-all-in-one:latest
     hostname: streambased-server
     platform: linux/amd64
     ports:
@@ -24,6 +8,10 @@
       - type: bind
         source: "./serverConfig"
         target: /etc/streambased/etc
+        read_only: true
+      - type: bind
+        source: "./snapshot"
+        target: /etc/streambased_data/snapshot
         read_only: true
 
   superset:

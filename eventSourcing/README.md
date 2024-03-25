@@ -103,6 +103,9 @@ docker-compose exec kafka1 kafka-consumer-groups \
   --group Streambased-Indexer
 ```
 
+In a normal deployement we would not have to do this as we would have scaled indexing nodes to match the incoming 
+message load. 
+
 ## Step 6: Open superset
 
 Now we can query the collected data and demonstrate the Streambased effect. 
