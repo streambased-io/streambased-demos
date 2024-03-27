@@ -13,11 +13,16 @@ First run the setup script, this will configure the resources for the demo.
 ./bin/setup.sh
 ```
 
+We must now configure the demo for our Aiven environments. Modify `/serverConfig/aiven_client.properties` and replace 
+`{Service URI}`,`{User}`,`{Password}`,`{Host}` and `{Port}` with the correct values from your Aiven console.
+
 Our environment consists of the following components:
 
 1. Streambased Indexer - to create the indexes Streambased uses to be fast
 2. Streambased Server - to make the Kafka data available via JDBC
 3. Superset - a popular and easy to use database client
+
+
 
 ## Step 2: Start the environment
 
@@ -30,9 +35,9 @@ docker-compose up -d
 We also need to set some things up for the clients:
 
 ```bash
-export BOOTSTRAP_SERVERS=`grep consumer.bootstrap.servers serverConfig/indexer.properties | sed -e s/consumer.bootstrap.servers=//g`
-export SCHEMA_REGISTRY_URL=`grep schema.registry.schema.registry.url serverConfig/indexer.properties | sed -e s/schema.registry.schema.registry.url=//g`
-export SCHEMA_REGISTRY_USER_INFO=`grep schema.registry.basic.auth.user.info serverConfig/indexer.properties | sed -e s/schema.registry.basic.auth.user.info=//g`
+export BOOTSTRAP_SERVERS=`grep consumer.bootstrap.servers serverConfig/aiven_client.properties | sed -e s/consumer.bootstrap.servers=//g`
+export SCHEMA_REGISTRY_URL=`grep schema.registry.schema.registry.url serverConfig/aiven_client.properties | sed -e s/schema.registry.schema.registry.url=//g`
+export SCHEMA_REGISTRY_USER_INFO=`grep schema.registry.basic.auth.user.info serverConfig/aiven_client.properties | sed -e s/schema.registry.basic.auth.user.info=//g`
 ```
 
 ## Step 3: Create a topic
@@ -156,5 +161,5 @@ docker-compsoe rm
 
 ## Summary
 
-In this demo we have introduced Streambased acceleration to a simple topics in Aiven and reaped the benefits in 
+In this demo we have introduced Streambased acceleration to a simple topic in Aiven and reaped the benefits in 
 adhoc SQL queries against the dataset.
