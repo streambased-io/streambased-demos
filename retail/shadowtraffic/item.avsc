@@ -1,0 +1,13 @@
+{
+    "type": "record",
+    "name": "Item",
+    "fields": [
+        { "name": "item_id", "type": "string" },
+        { "name": "name", "type": "string" },
+        { "name": "description", "type": "string" },
+        { "name": "department", "type": "string" },
+        { "name": "weight", "type": "float" },
+        { "name": "size", "type": "string" },
+        { "name": "price", "type": "float" }
+    ]
+}

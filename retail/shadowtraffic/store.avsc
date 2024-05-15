@@ -1,0 +1,10 @@
+{
+    "type": "record",
+    "name": "Store",
+    "fields": [
+        { "name": "store_id", "type": "string" },
+        { "name": "opening_hours", "type": "string" },
+        { "name": "capacity", "type": "int" },
+        { "name": "location", "type": "string" }
+    ]
+}
