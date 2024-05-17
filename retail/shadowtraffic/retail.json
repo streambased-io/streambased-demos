@@ -2,13 +2,23 @@
   "generators": [
     {
       "topic": "store",
-      "key": {
-        "store_id": {
+      "vars": {
+        "storeId": {
           "_gen": "sequentialString",
           "expr": "store-~d"
         }
       },
+      "key": {
+        "store_id": {
+          "_gen": "var",
+          "var": "storeId"
+        }
+      },
       "value": {
+        "store_id": {
+          "_gen": "var",
+          "var": "storeId"
+        },
         "opening_hours": {
           "_gen": "oneOf",
           "choices": [
@@ -38,126 +48,22 @@
       }
     },
     {
-      "topic": "truck",
-      "vars": {
-        "truckId": {
-          "_gen": "string",
-          "expr": "truck-#{Number.numberBetween '1','91'}"
-        }
-      },
-      "key": {
-        "truck_id": {
-          "_gen": "var",
-          "var": "truckId"
-        }
-      },
-      "value": {
-        "truck_id": {
-          "_gen": "var",
-          "var": "truckId"
-        },
-        "truck_name": {
-          "_gen": "string",
-          "expr": "#{FunnyName.name}"
-        },
-        "current_latitude": {
-          "_gen": "uniformDistribution",
-          "bounds": [
-            46.2,
-            47.5
-          ]
-        },
-        "current_longitude": {
-          "_gen": "uniformDistribution",
-          "bounds": [
-            6.1,
-            7.5
-          ]
-        },
-        "capacity": {
-          "_gen": "integer",
-          "n": {
-            "_gen": "uniformDistribution",
-            "bounds": [
-              50,
-              300
-            ]
-          }
-        },
-        "reg_plate": {
-          "_gen": "string",
-          "expr": "#{Address.countryCode}-#{Number.digits '3'}-#{Number.digits '3'}"
-        },
-        "time_seconds": {
-          "_gen": "integer",
-          "n": {
-            "_gen": "uniformDistribution",
-            "bounds": [
-              0,
-              59
-            ]
-          }
-        },
-        "time_mins": {
-          "_gen": "integer",
-          "n": {
-            "_gen": "uniformDistribution",
-            "bounds": [
-              0,
-              59
-            ]
-          }
-        },
-        "time_hours": {
-          "_gen": "integer",
-          "n": {
-            "_gen": "uniformDistribution",
-            "bounds": [
-              0,
-              23
-            ]
-          }
-        },
-        "date_day": {
-          "_gen": "integer",
-          "n": {
-            "_gen": "uniformDistribution",
-            "bounds": [
-              10,
-              17
-            ]
-          }
-        },
-        "date_month": {
-          "_gen": "oneOf",
-          "choices": [
-            "5"
-          ]
-        }
-      },
-      "localConfigs": {
-        "events": {
-          "exactly": 500000
-        }
-      }
-    },
-    {
       "topic": "item",
       "vars": {
-        "ItemId": {
+        "itemId": {
           "_gen": "sequentialString",
           "expr": "item-~d"
         }
       },
       "key": {
         "item_id": {
-          "_gen": "vars",
+          "_gen": "var",
           "var": "itemId"
         }
       },
       "value": {
         "item_id": {
-          "_gen": "vars",
+          "_gen": "var",
           "var": "itemId"
         },
         "name": {
@@ -407,19 +313,104 @@
       },
       "localConfigs": {
         "events": {
-          "exactly": 500000
+          "exactly": 250000
+        }
+      }
+    },
+    {
+      "topic": "sale",
+      "key": {
+        "session_id": {
+          "_gen": "uuid"
+        }
+      },
+      "value": {
+        "item_id": {
+          "_gen": "oneOf",
+          "choices": [
+            "item-30000"
+          ]
+        },
+        "store_id": {
+          "_gen": "lookup",
+          "topic": "store",
+          "path": [
+            "key",
+            "store_id"
+          ]
+        },
+        "time_seconds": {
+          "_gen": "integer",
+          "n": {
+            "_gen": "uniformDistribution",
+            "bounds": [
+              0,
+              59
+            ]
+          }
+        },
+        "time_mins": {
+          "_gen": "integer",
+          "n": {
+            "_gen": "uniformDistribution",
+            "bounds": [
+              0,
+              59
+            ]
+          }
+        },
+        "time_hours": {
+          "_gen": "integer",
+          "n": {
+            "_gen": "uniformDistribution",
+            "bounds": [
+              0,
+              23
+            ]
+          }
+        },
+        "date_day": {
+          "_gen": "integer",
+          "n": {
+            "_gen": "uniformDistribution",
+            "bounds": [
+              10,
+              17
+            ]
+          }
+        },
+        "date_month": {
+          "_gen": "oneOf",
+          "choices": [
+            "5"
+          ]
+        }
+      },
+      "localConfigs": {
+        "events": {
+          "exactly": 100
         }
       }
     },
     {
       "topic": "store",
+      "vars": {
+        "storeId": {
+          "_gen": "string",
+          "expr": "store-#{Number.numberBetween '0','2000'}"
+        }
+      },
       "key": {
         "store_id": {
-          "_gen": "string",
-          "expr": "store-#{Number.numberBetween '0','100'}"
+          "_gen": "var",
+          "var": "storeId"
         }
       },
       "value": {
+        "store_id": {
+          "_gen": "var",
+          "var": "storeId"
+        },
         "opening_hours": {
           "_gen": "oneOf",
           "choices": [
@@ -450,6 +441,9 @@
               2000,
               5000
             ]
+          },
+          "events": {
+            "exactly": 25000
           }
         }
       }
@@ -553,14 +547,8 @@
         }
       },
       "localConfigs": {
-        "throttle": {
-          "ms": {
-            "_gen": "uniformDistribution",
-            "bounds": [
-              500,
-              1500
-            ]
-          }
+        "events": {
+          "exactly": 500000
         }
       }
     },
@@ -611,241 +599,8 @@
         }
       },
       "localConfigs": {
-        "throttle": {
-          "ms": {
-            "_gen": "uniformDistribution",
-            "bounds": [
-              100,
-              1000
-            ]
-          }
-        },
         "events": {
           "exactly": 25000
-        }
-      }
-    },
-    {
-      "topic": "delivery",
-      "fork": {
-        "key": {
-          "_gen": "uuid"
-        },
-        "stagger": {
-          "ms": {
-            "_gen": "uniformDistribution",
-            "bounds": [
-              100,
-              500
-            ]
-          }
-        },
-        "maxForks": {
-          "_gen": "integer",
-          "n": {
-            "_gen": "uniformDistribution",
-            "bounds": [
-              1,
-              15
-            ]
-          }
-        }
-      },
-      "key": {
-        "delivery_id": {
-          "_gen": "var",
-          "var": "forkKey"
-        }
-      },
-      "value": {
-        "item_id": {
-          "_gen": "lookup",
-          "topic": "item",
-          "path": [
-            "key",
-            "item_id"
-          ]
-        },
-        "truck_id": {
-          "_gen": "lookup",
-          "topic": "truck",
-          "path": [
-            "key",
-            "truck_id"
-          ]
-        },
-        "store_id": {
-          "_gen": "lookup",
-          "topic": "store",
-          "path": [
-            "key",
-            "store_id"
-          ]
-        },
-        "time_seconds": {
-          "_gen": "integer",
-          "n": {
-            "_gen": "uniformDistribution",
-            "bounds": [
-              0,
-              59
-            ]
-          }
-        },
-        "time_mins": {
-          "_gen": "integer",
-          "n": {
-            "_gen": "uniformDistribution",
-            "bounds": [
-              0,
-              59
-            ]
-          }
-        },
-        "time_hours": {
-          "_gen": "integer",
-          "n": {
-            "_gen": "uniformDistribution",
-            "bounds": [
-              0,
-              23
-            ]
-          }
-        },
-        "date_day": {
-          "_gen": "integer",
-          "n": {
-            "_gen": "uniformDistribution",
-            "bounds": [
-              1,
-              31
-            ]
-          }
-        },
-        "date_month": {
-          "_gen": "oneOf",
-          "choices": [
-            "5"
-          ]
-        }
-      },
-      "localConfigs": {
-        "throttle": {
-          "ms": {
-            "_gen": "uniformDistribution",
-            "bounds": [
-              200,
-              600
-            ]
-          }
-        }
-      }
-    },
-    {
-      "topic": "sale",
-      "fork": {
-        "key": {
-          "_gen": "uuid"
-        },
-        "stagger": {
-          "ms": {
-            "_gen": "uniformDistribution",
-            "bounds": [
-              100,
-              500
-            ]
-          }
-        },
-        "maxForks": {
-          "_gen": "integer",
-          "n": {
-            "_gen": "uniformDistribution",
-            "bounds": [
-              1,
-              15
-            ]
-          }
-        }
-      },
-      "key": {
-        "session_id": {
-          "_gen": "var",
-          "var": "forkKey"
-        }
-      },
-      "value": {
-        "item_id": {
-          "_gen": "lookup",
-          "topic": "item",
-          "path": [
-            "key",
-            "item_id"
-          ]
-        },
-        "store_id": {
-          "_gen": "lookup",
-          "topic": "store",
-          "path": [
-            "key",
-            "store_id"
-          ]
-        },
-        "time_seconds": {
-          "_gen": "integer",
-          "n": {
-            "_gen": "uniformDistribution",
-            "bounds": [
-              0,
-              59
-            ]
-          }
-        },
-        "time_mins": {
-          "_gen": "integer",
-          "n": {
-            "_gen": "uniformDistribution",
-            "bounds": [
-              0,
-              59
-            ]
-          }
-        },
-        "time_hours": {
-          "_gen": "integer",
-          "n": {
-            "_gen": "uniformDistribution",
-            "bounds": [
-              0,
-              23
-            ]
-          }
-        },
-        "date_day": {
-          "_gen": "integer",
-          "n": {
-            "_gen": "uniformDistribution",
-            "bounds": [
-              10,
-              17
-            ]
-          }
-        },
-        "date_month": {
-          "_gen": "oneOf",
-          "choices": [
-            "5"
-          ]
-        }
-      },
-      "localConfigs": {
-        "throttle": {
-          "ms": {
-            "_gen": "uniformDistribution",
-            "bounds": [
-              200,
-              500
-            ]
-          }
         }
       }
     }
