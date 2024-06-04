@@ -9,10 +9,6 @@
         source: "./serverConfig"
         target: /etc/streambased/etc
         read_only: true
-      - type: bind
-        source: "./snapshot"
-        target: /etc/streambased_data/snapshot
-        read_only: true
 
   superset:
     build:
