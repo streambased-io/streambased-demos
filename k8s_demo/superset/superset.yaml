@@ -1,0 +1,52 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: superset
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: superset
+  template:
+    metadata:
+      labels:
+        app: superset
+    spec:
+      containers:
+        - name: content
+          image: streambased/superset-demo:latest
+          env:
+            - name: ADMIN_USERNAME
+              value: "admin"
+            - name: ADMIN_EMAIL
+              value: "admin@superset.com"
+            - name: ADMIN_PASSWORD
+              value: "admin"
+          resources:
+            requests:
+              memory: "4Gi"
+              cpu: "2000m"
+            limits:
+              memory: "16Gi"
+              cpu: "4000m"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: superset-service
+spec:
+  selector:
+    app: superset
+  ports:
+    - port: 8088
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: streambased-ingress
+spec:
+  defaultBackend:
+    service:
+      name: superset-service
+      port:
+        number: 8088

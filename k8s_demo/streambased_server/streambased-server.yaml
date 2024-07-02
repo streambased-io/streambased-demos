@@ -1,0 +1,59 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: streambased-server
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: streambased-server
+  template:
+    metadata:
+      labels:
+        app: streambased-server
+    spec:
+      containers:
+        - name: content
+          image: streambased/streambased-all-in-one:latest
+          volumeMounts:
+            - name: catalog-secret
+              mountPath: /etc/streambased/etc/catalog
+              readOnly: true
+            - name: config-secret
+              mountPath: /etc/streambased/etc
+              readOnly: true
+          resources:
+            requests:
+              memory: "4Gi"
+              cpu: "2000m"
+            limits:
+              memory: "16Gi"
+              cpu: "4000m"
+      volumes:
+        - name: catalog-secret
+          secret:
+            secretName: catalog-secret
+        - name: config-secret
+          secret:
+            secretName: config-secret
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: streambased-server-service
+spec:
+  selector:
+    app: streambased-server
+  ports:
+    - port: 8080
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: streambased-ingress
+spec:
+  defaultBackend:
+    service:
+      name: streambased-server-service
+      port:
+        number: 8080
