@@ -62,7 +62,7 @@ services:
 
 
   streambased-server:
-    image: local/streambased-all-in-one:latest
+    image: streambased/streambased-all-in-one:latest
     hostname: streambased-server
     platform: linux/amd64
     ports:
