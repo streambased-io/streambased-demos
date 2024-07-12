@@ -85,7 +85,7 @@ Now we can describe our topics by running these statements (run the 1 at a time)
 
 ```bash
 use kafka.streambased;
-show topics;
+show tables;
 ```
 
 And see how much data is contained by running:
@@ -95,14 +95,14 @@ select count(*) from transactions;
 select count(*) from payment_terms;
 ```
 
-Adn see their structure from:
+And see their structure from:
 
 ```bash
 describe transactions;
 describe payment_terms;
 ```
 
-This is a much easier to use interface with far less risk than the overly powerful console tools.
+This is a much easier to use interface with far less risky than the overly powerful console tools.
 
 ## Step 4: Back to the story
 
