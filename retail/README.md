@@ -171,7 +171,7 @@ notebook but a general set of steps is as follows:
 2. Calculate lines of best fit
 3. Plot the data set and trend lines
 4. Calculate a predicted exchange rate 6 months in the future using the trend lines.
-5. 
+
 ## Summary
 
 In this demo we performed a fictitious investigation into a production issue from a retail 
