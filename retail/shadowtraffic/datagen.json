@@ -1,0 +1,135 @@
+{
+  "generators": [
+    {
+      "topic": "transactions",
+      "value": {
+        "storeId": {
+          "_gen": "string",
+          "expr": "#{Country.countryCode2}-#{Number.numberBetween '1000','9999'}"
+        },
+        "amount" : {
+          "_gen": "uniformDistribution",
+          "bounds": [
+            10,
+            100
+          ]
+        },
+        "paymentTermCode" : {
+          "_gen": "string",
+          "expr": "#{Country.countryCode3}"
+        },
+        "paymentTime" : {
+          "_gen": "sequentialInteger",
+          "startingFrom": 1718011807
+        },
+        "itemCode" : {
+          "_gen": "string",
+          "expr": "#{Code.ean8}"
+        }
+      },
+      "localConfigs": {
+        "events": {
+          "exactly": 2500000
+        }
+      }
+    },
+    {
+      "topic": "payment_terms",
+      "value": {
+        "termCode": {
+          "_gen": "string",
+          "expr": "#{Country.countryCode3}"
+        },
+        "currency": {
+          "_gen": "string",
+          "expr": "#{Country.currencyCode}"
+        },
+        "exchangeRate": {
+          "_gen": "subtract",
+          "args": [
+            1002.0,
+            {
+              "_gen": "divide",
+              "args": [
+                {
+                  "_gen": "normalDistribution",
+                  "mean": {
+                    "_gen": "now"
+                  },
+                  "sd": 50000,
+                  "decimals": 4
+                },
+                1718011807.0
+              ]
+            }
+          ]
+        },
+        "daysToSettle": {
+          "_gen": "oneOf",
+          "choices": [
+            30,
+            60,
+            90
+          ]
+        },
+        "updateTime": {
+          "_gen": "normalDistribution",
+          "mean": 1719011807,
+          "sd": 500000,
+          "decimals": 0
+        }
+      },
+      "localConfigs": {
+        "events": {
+          "exactly": 1000
+        }
+      }
+    },
+    {
+      "topic": "transactions",
+      "value": {
+        "storeId": "ZZ-123",
+        "amount": 0.0,
+        "paymentTermCode": "zwd",
+        "paymentTime": {
+          "_gen": "normalDistribution",
+          "mean": 1719011807,
+          "sd": 500000,
+          "decimals": 0
+        },
+        "itemCode": "135798642"
+      },
+      "localConfigs": {
+        "events": {
+          "exactly": 1000
+        }
+      }
+    },
+    {
+      "topic": "payment_terms",
+      "value": {
+        "termCode": "zwd",
+        "currency": "ZWD",
+        "exchangeRate": 9223372036854775806.0,
+        "daysToSettle": 30,
+        "updateTime" : 1719011807.0
+      },
+      "localConfigs": {
+        "events": {
+          "exactly": 1
+        }
+      }
+    }
+  ],
+  "connections": {
+    "kafka": {
+      "kind": "kafka",
+      "producerConfigs": {
+        "bootstrap.servers": "kafka1:9092",
+        "key.serializer": "io.shadowtraffic.kafka.serdes.JsonSerializer",
+        "value.serializer": "io.confluent.kafka.serializers.KafkaAvroSerializer",
+        "schema.registry.url": "http://schema-registry:8081"
+      }
+    }
+  }
+}

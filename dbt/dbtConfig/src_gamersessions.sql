@@ -1,1 +1,0 @@
-SELECT * FROM kafka.streambased.gamersessions WHERE name = 'HUGH PRUE-GEORGE'
