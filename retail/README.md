@@ -42,7 +42,7 @@ Our logical environment consists of the following topics:
 To bring up the environment run:
 
 ```bash
-docker-compose up -d
+./bin/start.sh
 ```
 
 ## Step 3: Inspect the environment
