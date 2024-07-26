@@ -112,5 +112,6 @@ services:
         source: "./shadowtraffic"
         target: /etc/shadowtraffic
         read_only: true
+    env_file: "shadowtraffic/free-trial-license.env"
     command: --config /etc/shadowtraffic/datagen.json --seed 1234
     restart: on-failure
