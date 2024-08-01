@@ -59,16 +59,16 @@ This is a much easier to use interface with far less risky than the overly power
 
 ## Step 6: Fetch some data
 
-Now let's perform a common task, selecting all of the transactions performed by a particular branch:
+Now let's perform a common task, fetching the details for a single transaction:
 
 ```
 use kafka.streambased;
-select * from demo_transactions where branchid='123';
+select * from demo_transactions where transactionid='1234-1234-1234-1234';
 ```
 
 and click `RUN`
 
-Streambased indexing drastically reduces the amount of data required to be read from Confluent for this this query, 
+Streambased indexing drastically reduces the amount of data required to be read from Confluent for this query, 
 increasing performance and lowering costs. 
 
 ## Step 7: Compare with no Streambased acceleration
