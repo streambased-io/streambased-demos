@@ -2,7 +2,7 @@ version: '3.7'
 services:
 
   streambased-server:
-    image: local/streambased-all-in-one:latest
+    image: streambased/streambased-enterprise:latest
     hostname: streambased-server
     platform: linux/amd64
     ports:
