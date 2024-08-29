@@ -1,0 +1,113 @@
+{
+  "generators": [
+    {
+      "topic": "_conduktor_gateway_auditlogs",
+      "value": {
+        "id": {
+          "_gen": "uuid"
+        },
+        "source": null,
+        "type": {
+          "_gen": "weightedOneOf",
+          "choices": [
+            {
+              "weight": 5,
+              "value": "REST API"
+            },
+            {
+              "weight": 5000,
+              "value": "AUTHENTICATION"
+            },
+            {
+              "weight": 5000,
+              "value": "SAFEGUARD"
+            }
+          ]
+        },
+        "authenticationPrincipal": {
+          "_gen": "string",
+          "expr": "#{Name.username}"
+        },
+        "userName": {
+          "_gen": "string",
+          "expr": "#{Country.countryCode2}"
+        },
+        "connection": {
+          "localAddress": "/192.168.176.4:6969",
+          "remoteAddress": {
+            "_gen": "string",
+            "expr": "/192.168.176.6:#{Number.numberBetween '1001','16000'}"
+          }
+        },
+        "specVersion": "0.1.0",
+        "time": {
+          "_gen": "formatDateTime",
+          "ms": {
+            "_gen": "now"
+          },
+          "format": "yyyy-MM-dd'T'HH:mm:ss.SSSZZ"
+        },
+        "eventData": {
+          "level" : {
+            "_gen": "weightedOneOf",
+            "choices": [
+              {
+                "weight": 50000,
+                "value": "info"
+              },
+              {
+                "weight": 50000,
+                "value": "warn"
+              },
+              {
+                "weight": 5,
+                "value": "error"
+              }
+            ]
+          },
+          "plugin" : {
+            "_gen": "weightedOneOf",
+            "choices": [
+              {
+                "weight": 100000,
+                "value": null
+              },
+              {
+                "weight": 5,
+                "value": "io.conduktor.gateway.interceptor.safeguard.ProducePolicyPlugin"
+              }
+            ]
+          },
+          "message" : {
+            "_gen": "weightedOneOf",
+            "choices": [
+              {
+                "weight": 10000,
+                "value": null
+              },
+              {
+                "weight": 5,
+                "value": "Request parameters do not satisfy the configured policy. Topic 'cars' with invalid value for 'acks': 1. Valid value is one of the values: -1. Topic 'cars' with invalid value for 'compressions': SNAPPY. Valid value is one of the values: [GZIP, NONE]"
+              }
+            ]
+          }
+        }
+      },
+      "localConfigs": {
+        "events": {
+          "exactly": 1000000
+        }
+      }
+    }
+  ],
+  "connections": {
+    "kafka": {
+      "kind": "kafka",
+      "producerConfigs": {
+        "bootstrap.servers": "kafka1:9092",
+        "key.serializer": "io.shadowtraffic.kafka.serdes.JsonSerializer",
+        "value.serializer": "io.shadowtraffic.kafka.serdes.JsonSerializer"
+      }
+    }
+  }
+}
