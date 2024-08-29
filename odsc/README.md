@@ -1,4 +1,4 @@
-# Realtime and AI Workship at ODSC Europe
+# Realtime and AI Workshop at ODSC Europe
 
 This demo is a companion to the workshop instructions available here:
 
