@@ -42,3 +42,10 @@ services:
         source: "./notebooks"
         target: /notebooks
         read_only: false
+
+  kafka-client:
+    build:
+      context: ./kafka-client
+      dockerfile: Dockerfile
+    container_name: kafka-client
+    platform: linux/amd64
