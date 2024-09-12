@@ -5,7 +5,7 @@
       "value": {
         "storeId": {
           "_gen": "string",
-          "expr": "#{Country.countryCode2}-#{Number.numberBetween '1000','9999'}"
+          "expr": "#{Country.countryCode2}-001"
         },
         "amount" : {
           "_gen": "uniformDistribution",
@@ -97,7 +97,10 @@
           "sd": 500000,
           "decimals": 0
         },
-        "itemCode": "135798642"
+        "itemCode" : {
+          "_gen": "string",
+          "expr": "#{Code.ean8}"
+        }
       },
       "localConfigs": {
         "events": {
