@@ -1,0 +1,3 @@
+[submodule "shadowtraffic-examples"]
+	path = shadowtraffic-examples
+	url = https://github.com/ShadowTraffic/shadowtraffic-examples.git

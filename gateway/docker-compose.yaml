@@ -1,0 +1,135 @@
+version: '3.7'
+services:
+
+  zookeeper:
+    image: "confluentinc/cp-zookeeper:7.5.0"
+    hostname: zookeeper
+    environment:
+      ZOOKEEPER_CLIENT_PORT: 2181
+      ZOOKEEPER_TICK_TIME: "2000"
+    ports:
+      - 2181:2181
+
+  kafka1:
+    image: "confluentinc/cp-kafka:7.5.0"
+    hostname: kafka1
+    ports:
+      - 9092:9092
+    depends_on:
+      - zookeeper
+    environment:
+      KAFKA_BROKER_ID: 1
+      KAFKA_ZOOKEEPER_CONNECT: "zookeeper:2181"
+      KAFKA_REPLICATION_FACTOR: 1
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+      KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: 1
+      KAFKA_TRANSACTION_STATE_LOG_MIN_ISR: 1
+      KAFKA_DEFAULT_REPLICATION_FACTOR: 1
+      KAFKA_GROUP_INITIAL_REBALANCE_DELAY_MS: 0
+      KAFKA_LOG4J_LOGGERS: "kafka.authorizer.logger=INFO"
+      KAFKA_LOG4J_ROOT_LOGLEVEL: WARN
+      KAFKA_AUTO_CREATE_TOPICS_ENABLE: "false"
+      KAFKA_INTER_BROKER_LISTENER_NAME: PLAINTEXT
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,SECURE:SASL_PLAINTEXT
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka1:9092,SECURE://kafka1:10092
+      KAFKA_SASL_ENABLED_MECHANISMS: PLAIN
+      KAFKA_LISTENER_NAME_SECURE_SASL_ENABLED_MECHANISMS: PLAIN
+      KAFKA_LISTENER_NAME_SECURE_PLAIN_SASL_JAAS_CONFIG: |
+        org.apache.kafka.common.security.plain.PlainLoginModule required \
+        username="admin" \
+        password="admin-secret" \
+        user_admin="admin-secret" \
+        user_unrestricted="unrestricted-secret" \
+        user_restricted="restricted-secret";
+      KAFKA_AUTHORIZER_CLASS_NAME: kafka.security.authorizer.AclAuthorizer
+      KAFKA_ALLOW_EVERYONE_IF_NO_ACL_FOUND: true
+    volumes:
+      - type: bind
+        source: "./kafka"
+        target: /tmp/kafka
+        read_only: true
+
+  schema-registry:
+    image: confluentinc/cp-schema-registry:7.5.0
+    hostname: schema-registry
+    container_name: schema-registry
+    depends_on:
+      - kafka1
+    ports:
+      - "8081:8081"
+    environment:
+      SCHEMA_REGISTRY_HOST_NAME: schema-registry
+      SCHEMA_REGISTRY_KAFKASTORE_BOOTSTRAP_SERVERS: kafka1:9092
+      SCHEMA_REGISTRY_LOG4J_ROOT_LOGLEVEL: DEBUG
+      SCHEMA_REGISTRY_LISTENERS: "http://0.0.0.0:8081"
+      SCHEMA_REGISTRY_KAFKASTORE_TOPIC: _schemas
+      SCHEMA_REGISTRY_SCHEMA_REGISTRY_GROUP_ID: schema-registry
+
+
+  streambased-server:
+    image: streambased/streambased-enterprise:latest
+    hostname: streambased-server
+    platform: linux/amd64
+    ports:
+      - '8080:8080'
+    volumes:
+      - type: bind
+        source: "./serverConfig"
+        target: /etc/streambased/etc
+        read_only: true
+
+  superset:
+    build:
+      context: ./superset
+      dockerfile: Dockerfile
+    container_name: superset
+    platform: linux/amd64
+    environment:
+      - ADMIN_USERNAME=admin
+      - ADMIN_EMAIL=admin@superset.com
+      - ADMIN_PASSWORD=admin
+    ports:
+      - '8088:8088'
+
+  shadowtraffic:
+    image: shadowtraffic/shadowtraffic:latest
+    hostname: shadowtraffic
+    platform: linux/amd64
+    profiles:
+      - startLater
+    depends_on:
+      - schema-registry
+    volumes:
+      - type: bind
+        source: "./shadowtraffic"
+        target: /etc/shadowtraffic
+        read_only: true
+    environment:
+      - LICENSE_ID=25367423-84d0-48bb-9e4f-28b777b3eef1
+      - LICENSE_EMAIL=tom@streambased.io
+      - LICENSE_ORGANIZATION=Streambased
+      - LICENSE_EDITION=ShadowTraffic Enterprise
+      - LICENSE_EXPIRATION=2025-04-29
+      - LICENSE_SIGNATURE=z3wCP4g1RFjqaOkYwFCl3HE/wzVzGr0YpVVQLemUXbxxfG8AI6s44heQmvYwBTkb/yXzl622f8xhQnfcO42O7/pxuOHVjjayX8yyL8byGFxZ8eW6f7WBHIh4lJPl+jzWR0XQMXBQMa6YbMdSvJWue8m0TIaUvUqQLBaVOBOWjrtMdks3oVmMF/obW1hWym6NI45DEdS84JfzGbv7CxIOccwd4BcHD2BOManhvPxKu4c5cXUC8ll6e+3Vm20SoVZCsgNqgdeqouxB8K+LEz7m1cj/JDr5/6N0wmfDemSzqlGrnm7BCQ37ZnML0ymhKJZTfnnK9AGzeeb7b4RAk/Rm1w==
+    command: --config /etc/shadowtraffic/datagen.json --seed 1234
+    restart: on-failure
+
+  gateway:
+    image: conduktor/conduktor-gateway:3.0.3
+    hostname: gateway
+    container_name: gateway
+    environment:
+      KAFKA_BOOTSTRAP_SERVERS: kafka1:9092
+      GATEWAY_ADVERTISED_HOST: gateway
+      GATEWAY_MODE: VCLUSTER
+      GATEWAY_SECURITY_PROTOCOL: SASL_PLAINTEXT
+      GATEWAY_FEATURE_FLAGS_ANALYTICS: false
+    ports:
+      - 6969:6969
+      - 6970:6970
+      - 6971:6971
+      - 8888:8888
+    healthcheck:
+      test: curl localhost:8888/health
+      interval: 5s
+      retries: 25
