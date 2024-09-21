@@ -29,7 +29,7 @@
       },
       "localConfigs": {
         "events": {
-          "exactly": 2500000
+          "exactly": 1000000
         }
       }
     },
