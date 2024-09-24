@@ -1,6 +1,6 @@
 
 
-# Hands on\! Using real time data in AI models
+# Hands on! Using real time data in AI models
 
 
 ## Overview
@@ -27,7 +27,7 @@ By the end of this session you will:
 
 ## Preparation
 
-There are 3 ways to complete this workshop, the delivery steps will not change but each approach has different advantages/disadvantages in terms of ease of setup vs longevity:
+The workshop is done in several ways this is one of the 
 
 **Prerequisites**
 
@@ -35,9 +35,6 @@ Before we get started please clone or download the following github repository:
 
 [https://github.com/streambased-io/streambased-demos](https://github.com/streambased-io/streambased-demos)
 
- and download the Kafka client packages here: 
-
-[https://kafka.apache.org/downloads](https://kafka.apache.org/downloads)
 
 ***Docker***
 
@@ -60,9 +57,9 @@ pip install numpy scipy scikit-learn matplotlib
 pip install openai
 ```
 
-A short presentation on the goal and methodology for this workshop can be found here: [https://docs.google.com/presentation/d/18EeVRAXzRPS\_8zP5kws76Gup7fv-h70uyBTXJLA\_Yyw/edit?usp=sharing](https://docs.google.com/presentation/d/18EeVRAXzRPS_8zP5kws76Gup7fv-h70uyBTXJLA_Yyw/edit?usp=sharing)
+A short presentation on the goal and methodology for this workshop can be found here: [Link](https://docs.google.com/presentation/d/18EeVRAXzRPS_8zP5kws76Gup7fv-h70uyBTXJLA_Yyw/edit?usp=sharing)
 
-### CHAPTER 1: Bring me realtime\!
+### CHAPTER 1: Bring me realtime!
 
 **Step 0: Goal and methodology**
 
@@ -75,13 +72,13 @@ The data set we are working with is a publicly available set of captions from tr
 Streambased RDx provides a free and open source of realtime data feeds in Kafka format. Please take some time to browse the feeds available. Each feed gives the following information:
 
 1. A feed name  
-2. A short description of the data in the feed \- Good versions of these include a description of the structure of messages in the feed. If not don’t worry, we’ll look at this via Schema Registry later  
-3. The topic the feed relates to \- A Kafka topic name for the feed data, more on this later  
-4. Connection details \- Instructions on how to connect to the Kafka cluster that hosts this feed. 
+2. A short description of the data in the feed - Good versions of these include a description of the structure of messages in the feed. If not don’t worry, we’ll look at this via Schema Registry later  
+3. The topic the feed relates to - A Kafka topic name for the feed data, more on this later  
+4. Connection details - Instructions on how to connect to the Kafka cluster that hosts this feed. 
 
 The feed we are interested in is named “Youtube Gaming Subtitles” and can be found in the “Web and Tech” category. Under connection details you should see two sets of connection details:
 
-1. Operational connection details \- these can be used to investigate the data for operational purposes  
+1. Operational connection details - these can be used to investigate the data for operational purposes  
    
 ```
 `bootstrap.servers=pkc-l6wr6.europe-west2.gcp.confluent.cloud:9092`  
@@ -90,7 +87,7 @@ The feed we are interested in is named “Youtube Gaming Subtitles” and can be
 `sasl.mechanism=PLAIN`
 ```
 
-2. Analytical connection details \- these are to be used with analytical tooling for more complex, SQL based queries.   
+2. Analytical connection details - these are to be used with analytical tooling for more complex, SQL based queries.   
    
 ```
 `SET SESSION streambased_connection = '{`  
@@ -108,17 +105,17 @@ Copy both of these connection details for use later.
 
 **Step 2: Explore the data using Kafka tools**
 
-This section is based around the tools that come with Apache Kafka, these can be downloaded here: [https://kafka.apache.org/downloads](https://kafka.apache.org/downloads). Let’s perform some common tasks with them.
+This section is based around the tools that come with Apache Kafka, these can be downloaded here: [Link](https://kafka.apache.org/downloads). Let’s perform some common tasks with them.
 
 Note: First, copy all of the connection details retrieved from RDx into a file named client.properties and make a note of the “bootstrap.servers” value. You will need this for the commands below. 
 
-1. Listing topics \- A topic is a logical grouping of messages in Kafka we can list all of these in the Kafka cluster using the kafka-topics.sh tool as below:
+1. Listing topics - A topic is a logical grouping of messages in Kafka we can list all of these in the Kafka cluster using the kafka-topics.sh tool as below:
 
-kafka\_2.13-XXX/bin/kafka-topics.sh \--bootstrap-server \[bootstrap.servers config\] \--command-config client.properties \--list
+kafka_2.13-XXX/bin/kafka-topics.sh --bootstrap-server [bootstrap.servers config] --command-config client.properties --list
 
-2. We can describe a particular topic by providing the \--describe and \--topic arguments:
+2. We can describe a particular topic by providing the --describe and --topic arguments:
 
-kafka\_2.13-XXX/bin/kafka-topics.sh \--bootstrap-server \[bootstrap.servers config\] \--command-config client.properties \--describe \--topic yt\_gaming\_subtitles
+kafka_2.13-XXX/bin/kafka-topics.sh --bootstrap-server [bootstrap.servers config] --command-config client.properties --describe --topic yt_gaming_subtitles
 
 This will produce an output similar to the below:
 
@@ -134,7 +131,7 @@ This will produce an output similar to the below:
 
 We can learn a lot from this that can help us write high performance queries later. This workshop won’t dive deep into everything but the major points can be found below:
 
-* Partition Count \- Kafka is a distributed system and partitions are the way in which data is distributed across a cluster. Kafka provides guarantees that all messages with the same key (more or on this later) will reside on the same partition and will be retrieved in order, however guarantees of ordering between partitions are not provided.  
+* Partition Count - Kafka is a distributed system and partitions are the way in which data is distributed across a cluster. Kafka provides guarantees that all messages with the same key (more or on this later) will reside on the same partition and will be retrieved in order, however guarantees of ordering between partitions are not provided.  
 * Configs \- Kafka is very very configurable, the documentation covers them all but the important ones are:  
   * retention.ms \- how long data will be kept on this topic  
   * cleanup.policy \- how data on this topic should be treated  
@@ -145,7 +142,7 @@ We can learn a lot from this that can help us write high performance queries lat
 3. Viewing message structure \- A message is the smallest unit of information within Kafka, it contains two parts, a key and a value. Neither are mandatory and may be structured or unstructured. When structured the message schema is typically kept in a Schema Registry and we can inspect this to view the structure. Schema Registry provides a REST API for this purpose. Let’s have a look at the schema for our topic:
 
 ```bash
-curl \-u XXX:XXX [https://psrc-571d82.europe-west2.gcp.confluent.cloud/subjects/yt\_gaming\_subtitles-value/versions/latest](https://psrc-571d82.europe-west2.gcp.confluent.cloud/subjects/yt_gaming_subtitles-value/versions/latest)
+curl -u XXX:XXX [https://psrc-571d82.europe-west2.gcp.confluent.cloud/subjects/yt_gaming_subtitles-value/versions/latest](https://psrc-571d82.europe-west2.gcp.confluent.cloud/subjects/yt_gaming_subtitles-value/versions/latest)
 ```
 
 ```
@@ -167,7 +164,7 @@ From the above we can see that our messages have 3 fields:
 4. Fetching some data \- Tools that fetch data from Kafka are called consumers, they start reading data at one point in the log and continue until stopped. The below will start from now and fetch any new messages available on the topic:
 
 ```bash
-kafka\_2.13-XXX/bin/kafka-console-consumer.sh \--bootstrap-server \[bootstrap.servers config\] \--consumer.config client.properties \--topic yt\_gaming\_subtitles
+kafka_2.13-XXX/bin/kafka-console-consumer.sh --bootstrap-server [bootstrap.servers config] --consumer.config client.properties --topic yt_gaming_subtitles
 ```
 
 You should see something like the below:
@@ -244,7 +241,6 @@ Note: any column beginning with an underscore is an internal column that reflect
 
 `SELECT text FROM yt_gaming_subtitles WHERE timestamp > 1725526800 LIMIT 100;`
 
-**\<-- 5min break \- Have a play with the test dataset or play minesweeper ;-) \--\>**
 
 **CHAPTER 2: Realtime and RAG**
 
@@ -282,7 +278,7 @@ import os
 from openai import OpenAI  
 import openai  
 import json  
-from sqlalchemy.engine import create\_engine  
+from sqlalchemy.engine import create_engine  
 from sqlalchemy import text  
 import pandas as pd  
 import time  
@@ -293,15 +289,15 @@ import random
 ```python
 """A utility function to setup the connection to the realtime source"""
 
-def create\_kafka\_engine(connection\_params: str):  
+def create_kafka_engine(connection_params: str):  
     
-   connect\_args \= {  
-       "session\_properties": {"streambased\_connection": connection\_params, "use\_streambased": True},  
-       "http\_scheme": "https",  
+   connect_args = {  
+       "session_properties": {"streambased_connection": connection_params, "use_streambased": True},  
+       "http_scheme": "https",  
        "schema": "streambased"  
    }  
     
-   engine \= create\_engine("trino://streambased.cloud:8443/kafka", connect\_args\=connect\_args)  
+   engine = create_engine("trino://streambased.cloud:8443/kafka", connect_args=connect_args)  
     
    return engine
 ```  
@@ -311,23 +307,23 @@ Paste the connection details under the connection params
 ```python
 """Make a connection for the realtime source"""
 
-connection\_params \= """{  
+connection_params = """{  
  "bootstrap.servers": "pkc-l6wr6.europe-west2.gcp.confluent.cloud:9092",  
- "security.protocol": "SASL\_SSL",  
+ "security.protocol": "SASL_SSL",  
  "sasl.jaas.config": "org.apache.kafka.common.security.plain.PlainLoginModule required username='4OOK2MI6TA37CC4K' password='0mzIsqc1Soz2thm9EutDuAkARY8CZqaNzJ5IF/KboX3l58XN/LZ+yQeuG3LmheIc';",  
  "sasl.mechanism": "PLAIN",  
  "schema.registry.url":"https://psrc-571d82.europe-west2.gcp.confluent.cloud",  
- "basic.auth.credentials.source":"USER\_INFO",  
+ "basic.auth.credentials.source":"USER_INFO",  
  "basic.auth.user.info":"FM36ASJ3BX2SWVXV:gKeS/p/CyfQYfd9/9diFwU6LsauvJ4mtmnPAv68ro7Bm81aZp29QOTXkV5yuv8af"  
 }"""
 
-engine \= create\_kafka\_engine(connection\_params)  
-connection \= engine.connect()
+engine = create_kafka_engine(connection_params)  
+connection = engine.connect()
 ```
    
 ***Step 1: Chunking the data*** 
 
-**FYI: From now on all steps take place within a Jupyter notebook. A completed template can be found here: \[link tbd\]**
+**FYI: From now on all steps take place within a Jupyter notebook. A completed template can be found here: [Jupyter Notebook](notebooks/workshop.ipynb)**
 
 In this step we will pull out time bound sections of the realtime stream and store them for processing later. This can be done with a simple SQL query in the form:
 
@@ -342,62 +338,62 @@ For this workshop we have taken the data of gaming subtitle for 7 days and split
 ```python
 """Prepare 7 days worth of queries"""
 
-current\_timestamp \= int(time.time()\*1000)  
-day1\_timestamp \= current\_timestamp \- 86400000  
-day2\_timestamp \= day1\_timestamp \- 86400000  
-day3\_timestamp \= day2\_timestamp \- 86400000  
-day4\_timestamp \= day3\_timestamp \- 86400000  
-day5\_timestamp \= day4\_timestamp \- 86400000  
-day6\_timestamp \= day5\_timestamp \- 86400000  
-day7\_timestamp \= day6\_timestamp \- 86400000
+current_timestamp = int(time.time()*1000)  
+day1_timestamp = current_timestamp - 86400000  
+day2_timestamp = day1_timestamp - 86400000  
+day3_timestamp = day2_timestamp - 86400000  
+day4_timestamp = day3_timestamp - 86400000  
+day5_timestamp = day4_timestamp - 86400000  
+day6_timestamp = day5_timestamp - 86400000  
+day7_timestamp = day6_timestamp - 86400000
 
 """We limit the rows returned for demo performance reasons"""
 
-day1\_query \= f"SELECT \* FROM yt\_gaming\_subtitles WHERE timestamp \> {day1\_timestamp\_start} AND timestamp \< {current\_timestamp} LIMIT 5000"  
-day2\_query \= f"SELECT \* FROM yt\_gaming\_subtitles WHERE timestamp \> {day2\_timestamp\_start} AND timestamp \< {day1\_timestamp\_start} LIMIT 5000"  
-day3\_query \= f"SELECT \* FROM yt\_gaming\_subtitles WHERE timestamp \> {day3\_timestamp\_start} AND timestamp \< {day2\_timestamp\_start} LIMIT 5000"  
-day4\_query \= f"SELECT \* FROM yt\_gaming\_subtitles WHERE timestamp \> {day4\_timestamp\_start} AND timestamp \< {day3\_timestamp\_start} LIMIT 5000"  
-day5\_query \= f"SELECT \* FROM yt\_gaming\_subtitles WHERE timestamp \> {day5\_timestamp\_start} AND timestamp \< {day4\_timestamp\_start} LIMIT 5000"  
-day6\_query \= f"SELECT \* FROM yt\_gaming\_subtitles WHERE timestamp \> {day6\_timestamp\_start} AND timestamp \< {day5\_timestamp\_start} LIMIT 5000"  
-day7\_query \= f"SELECT \* FROM yt\_gaming\_subtitles WHERE timestamp \> {day7\_timestamp\_start} AND timestamp \< {day6\_timestamp\_start} LIMIT 5000"
+day1_query = f"SELECT * FROM yt_gaming_subtitles WHERE timestamp > {day1_timestamp_start} AND timestamp < {current_timestamp} LIMIT 5000"  
+day2_query = f"SELECT * FROM yt_gaming_subtitles WHERE timestamp > {day2_timestamp_start} AND timestamp < {day1_timestamp_start} LIMIT 5000"  
+day3_query = f"SELECT * FROM yt_gaming_subtitles WHERE timestamp > {day3_timestamp_start} AND timestamp < {day2_timestamp_start} LIMIT 5000"  
+day4_query = f"SELECT * FROM yt_gaming_subtitles WHERE timestamp > {day4_timestamp_start} AND timestamp < {day3_timestamp_start} LIMIT 5000"  
+day5_query = f"SELECT * FROM yt_gaming_subtitles WHERE timestamp > {day5_timestamp_start} AND timestamp < {day4_timestamp_start} LIMIT 5000"  
+day6_query = f"SELECT * FROM yt_gaming_subtitles WHERE timestamp > {day6_timestamp_start} AND timestamp < {day5_timestamp_start} LIMIT 5000"  
+day7_query = f"SELECT * FROM yt_gaming_subtitles WHERE timestamp > {day7_timestamp_start} AND timestamp < {day6_timestamp_start} LIMIT 5000"
 ```
 
 
-```
-"""Execute 7 days worth of queries \- in production this would be executed asynchronously and continuously"""
+```python
+"""Execute 7 days worth of queries - in production this would be executed asynchronously and continuously"""
 
-connection \= engine.connect()
+connection = engine.connect()
 
-%reload\_ext sql  
+%reload_ext sql  
 %sql engine
 
-rs \= connection.execute(text(day1\_query))  
-day1\_l0\_df \= DataFrame(rs.fetchall())  
-day1\_l0\_df.columns \= rs.keys()
+rs = connection.execute(text(day1_query))  
+day1_l0_df = DataFrame(rs.fetchall())  
+day1_l0_df.columns = rs.keys()
 
-rs \= connection.execute(text(day2\_query))  
-day2\_l0\_df \= DataFrame(rs.fetchall())  
-day2\_l0\_df.columns \= rs.keys()
+rs = connection.execute(text(day2_query))  
+day2_l0_df = DataFrame(rs.fetchall())  
+day2_l0_df.columns = rs.keys()
 
-rs \= connection.execute(text(day3\_query))  
-day3\_l0\_df \= DataFrame(rs.fetchall())  
-day3\_l0\_df.columns \= rs.keys()
+rs = connection.execute(text(day3_query))  
+day3_l0_df = DataFrame(rs.fetchall())  
+day3_l0_df.columns = rs.keys()
 
-rs \= connection.execute(text(day4\_query))  
-day4\_l0\_df \= DataFrame(rs.fetchall())  
-day4\_l0\_df.columns \= rs.keys()
+rs = connection.execute(text(day4_query))  
+day4_l0_df = DataFrame(rs.fetchall())  
+day4_l0_df.columns = rs.keys()
 
-rs \= connection.execute(text(day5\_query))  
-day5\_l0\_df \= DataFrame(rs.fetchall())  
-day5\_l0\_df.columns \= rs.keys()
+rs = connection.execute(text(day5_query))  
+day5_l0_df = DataFrame(rs.fetchall())  
+day5_l0_df.columns = rs.keys()
 
-rs \= connection.execute(text(day6\_query))  
-day6\_l0\_df \= DataFrame(rs.fetchall())  
-day6\_l0\_df.columns \= rs.keys()
+rs = connection.execute(text(day6_query))  
+day6_l0_df = DataFrame(rs.fetchall())  
+day6_l0_df.columns = rs.keys()
 
-rs \= connection.execute(text(day7\_query))  
-day7\_l0\_df \= DataFrame(rs.fetchall())  
-day7\_l0\_df.columns \= rs.keys()
+rs = connection.execute(text(day7_query))  
+day7_l0_df = DataFrame(rs.fetchall())  
+day7_l0_df.columns = rs.keys()
 ```
 
 
@@ -415,27 +411,27 @@ The levels of summarization has to be determined by the amount of data that we a
 ```python
 """Level 1 summarisation: we take 1 day's worth of captions and summarise them to 1000 words"""
 
-day2\_l1\_prompt \= f"""I have provided the input of the youtube gaming subtitles for a single day please summmarise  
-it to 1000 words and make sure you don't leave important stuff out. The captions are: {' '.join(day2\_l0\_df\["text"\].dropna())}"""  
-day2\_l1\_summary \= llm\_model(day2\_l1\_prompt)
+day2_l1_prompt = f"""I have provided the input of the youtube gaming subtitles for a single day please summmarise  
+it to 1000 words and make sure you don't leave important stuff out. The captions are: {' '.join(day2_l0_df["text"].dropna())}"""  
+day2_l1_summary = llm_model(day2_l1_prompt)
 
-day3\_l1\_prompt \= f"""I have provided the input of the youtube gaming subtitles for a single day please summmarise  
-it to 1000 words and make sure you don't leave important stuff out. The captions are: {' '.join(day3\_l0\_df\["text"\].dropna())}"""  
-day3\_l1\_summary \= llm\_model(day3\_l1\_prompt)
+day3_l1_prompt = f"""I have provided the input of the youtube gaming subtitles for a single day please summmarise  
+it to 1000 words and make sure you don't leave important stuff out. The captions are: {' '.join(day3_l0_df["text"].dropna())}"""  
+day3_l1_summary = llm_model(day3_l1_prompt)
 
 """Level 2 summarisation: we take 1 day's worth of captions and extract 100 keywords"""
 
-day4\_l2\_prompt \= f"""I have provided the input of the youtube gaming subtitles for a single day please extract 100 keywords from it. The captions are: {' '.join(day4\_l0\_df\["text"\].dropna())}"""  
-day4\_l2\_summary \= llm\_model(day4\_l2\_prompt)
+day4_l2_prompt = f"""I have provided the input of the youtube gaming subtitles for a single day please extract 100 keywords from it. The captions are: {' '.join(day4_l0_df["text"].dropna())}"""  
+day4_l2_summary = llm_model(day4_l2_prompt)
 
-day5\_l2\_prompt \= f"""I have provided the input of the youtube gaming subtitles for a single day please extract 100 keywords from it. The captions are: {' '.join(day5\_l0\_df\["text"\].dropna())}"""  
-day5\_l2\_summary \= llm\_model(day5\_l2\_prompt)
+day5_l2_prompt = f"""I have provided the input of the youtube gaming subtitles for a single day please extract 100 keywords from it. The captions are: {' '.join(day5_l0_df["text"].dropna())}"""  
+day5_l2_summary = llm_model(day5_l2_prompt)
 
-day6\_l2\_prompt \= f"""I have provided the input of the youtube gaming subtitles for a single day please extract 100 keywords from it. The captions are: {' '.join(day6\_l0\_df\["text"\].dropna())}"""  
-day6\_l2\_summary \= llm\_model(day6\_l2\_prompt)
+day6_l2_prompt = f"""I have provided the input of the youtube gaming subtitles for a single day please extract 100 keywords from it. The captions are: {' '.join(day6_l0_df["text"].dropna())}"""  
+day6_l2_summary = llm_model(day6_l2_prompt)
 
-day7\_l2\_prompt \= f"""I have provided the input of the youtube gaming subtitles for a single day please extract 100 keywords from it. The captions are: {' '.join(day7\_l0\_df\["text"\].dropna())}"""  
-day7\_l2\_summary \= llm\_model(day7\_l2\_prompt)
+day7_l2_prompt = f"""I have provided the input of the youtube gaming subtitles for a single day please extract 100 keywords from it. The captions are: {' '.join(day7_l0_df["text"].dropna())}"""  
+day7_l2_summary = llm_model(day7_l2_prompt)
 ```
 
 ***Step 5: Composition***
@@ -455,16 +451,16 @@ Now let’s execute our assembled prompt against the LLM\!
 ```python
 """A utility function to execute prompts against the LLM"""
 
-def llm\_model(prompt):  
-   client \= OpenAI(api\_key\="**INSERT THE KEY HERE**")  
+def llm_model(prompt):  
+   client = OpenAI(api_key="**INSERT THE KEY HERE**")  
    try:  
-       response \=client.chat.completions.create(  
-           model\="gpt-4o-mini",  
-           messages\=\[{"role": "system", "content": "You have an extensive knowledge on english and have an amazing skill to summarise documents without losing important information and delvireing the content in a very consize way"},  
-                     {"role": "user", "content": prompt}\]  
+       response =client.chat.completions.create(  
+           model="gpt-4o-mini",  
+           messages=[{"role": "system", "content": "You have an extensive knowledge on english and have an amazing skill to summarise documents without losing important information and delvireing the content in a very consize way"},  
+                     {"role": "user", "content": prompt}]  
        )  
-       response\_message \= response.choices\[0\].message.content  
-       return response\_message  
+       response_message = response.choices[0].message.content  
+       return response_message  
    except openai.OpenAIError as e:  
        print(f"OpenAI API error: {e}")  
        return "Error with OpenAI API"  
@@ -475,24 +471,24 @@ def llm\_model(prompt):
 
 Pass the prompt as shown below by inserting the summarization data with it 
 
-```
+```python
 """Now we can compose a prompt"""
 
-prompt \= f"""I have provided captions from Youtube gaming videos from the last day here:
+prompt = f"""I have provided captions from Youtube gaming videos from the last day here:
 
-{' '.join(day1\_l0\_df\["text"\].dropna())}.
+{' '.join(day1_l0_df["text"].dropna())}.
 
 #I have also provided a sumary of Youtube gaming videos from 24 to 72hrs ago here:
 
-{day2\_l1\_summary}  
-{day3\_l1\_summary}
+{day2_l1_summary}  
+{day3_l1_summary}
 
 #I have also provided keywords extracted from Youtube gaming videos older than 72hrs here:
 
-{day4\_l2\_summary}  
-{day5\_l2\_summary}  
-{day6\_l2\_summary}  
-{day7\_l2\_summary}
+{day4_l2_summary}  
+{day5_l2_summary}  
+{day6_l2_summary}  
+{day7_l2_summary}
 
 #Use this information to answer the user's question. The user's question is what are the latest and enduring trends in the gaming field?
 
@@ -500,7 +496,7 @@ print(f"Composed a prompt with length: {len(prompt.split())}")
 
 """Execute the prompt against the LLM"""
 
-result \= llm\_model(prompt)  
+result = llm_model(prompt)  
 print(result)
 ```
 
@@ -515,34 +511,32 @@ Using top K or raw data as an input data
 ```python
 """Let's compare with a similar prompt size with a lot less detail"""
 
-top\_k\_selections \= \[day1\_l0\_df,day2\_l0\_df,day3\_l0\_df,day4\_l0\_df,day5\_l0\_df,day6\_l0\_df,day7\_l0\_df\]  
-top\_k\_df\_1 \= random.choice(top\_k\_selections)  
-top\_k\_df\_2 \= random.choice(top\_k\_selections)
+top_k_selections = [day1_l0_df,day2_l0_df,day3_l0_df,day4_l0_df,day5_l0_df,day6_l0_df,day7_l0_df]  
+top_k_df_1 = random.choice(top_k_selections)  
+top_k_df_2 = random.choice(top_k_selections)
 
-bad\_prompt \= f"""I have provided captions from Youtube gaming videos here:
+bad_prompt = f"""I have provided captions from Youtube gaming videos here:
 
-{' '.join(top\_k\_df\_1\["text"\].dropna())}  
-{' '.join(top\_k\_df\_2\["text"\].dropna())}
+{' '.join(top_k_df_1["text"].dropna())}  
+{' '.join(top_k_df_2["text"].dropna())}
 
 Use this information to answer the user's question. The user's question is what are the latest and enduring trends in the gaming field?"""
 
 """Execute the bad prompt against the LLM"""
 
-bad\_result \= llm\_model(bad\_prompt)  
-print(bad\_result)
+bad_result = llm_model(bad_prompt)  
+print(bad_result)
 ```
 
 Example2:-   
 Using the LLM without any data 
 
+```python
+raw_prompt = "what are the latest and enduring trends in the gaming field?"  
+raw_result = llm_model(raw_prompt)
+
+print(raw_result)
 ```
-raw\_prompt \= "what are the latest and enduring trends in the gaming field?"  
-raw\_result \= llm\_model(raw\_prompt)
 
-print(raw\_result)
-```
 
-**Feedback**
-
-We hope you enjoyed this workshop and invite you to complete this survey so that we can improve future sessions: https://zl8zkwkmf8a.typeform.com/to/mJ3cXLin
 
