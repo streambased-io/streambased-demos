@@ -7,21 +7,13 @@
 
 This workshop will introduce realtime data as a key ally in developing AI models. We will cover realtime data structure, common patterns and common technologies used to hand realtime data. We will utilise the tools and techniques with which you are comfortable to explore realtime data so that it can be seamlessly integrated into your development workflow.
 
-The jewel of the session will be the development of a hierarchical condensation RAG based model utilising an open source realtime dataset to create a chatbot able to answer detailed questions around the current themes in the film community today.
+The jewel of the session will be the development of a hierarchical condensation RAG based model utilising an open source realtime dataset to create a chatbot able to answer detailed questions around the current themes in the gaming community today.
 
 ### Learning Outcomes
 
 By the end of this session you will:
 
-* Understand the core language and concepts of realtime data including  
-  * Topics  
-  * Partitions  
-  * Messages  
-  * Pub/Sub  
-  * Produce/Consume  
-  * Offsets  
-  * Time concepts  
-  * Schema Registry  
+* Understand the core language and concepts of realtime data.  
 * Be able to discover, explore and prepare a realtime data source for RAG  
 * Use Python within a Jupyter notebook to enhance a prompt with realtime data
 
@@ -31,14 +23,9 @@ The workshop is done in several ways this is one of the
 
 **Prerequisites**
 
-Before we get started please clone or download the following github repository:
-
-[https://github.com/streambased-io/streambased-demos](https://github.com/streambased-io/streambased-demos)
-
-
 ***Docker***
 
-Streambased provides a docker demo that contains all of the tools you will need to complete this workshop. This is available here: [https://github.com/streambased-io/streambased-demos/tree/main/odsc](https://github.com/streambased-io/streambased-demos/tree/main/odsc)
+Streambased provides a docker demo that contains all of the tools you will need to complete this workshop. This is available here: [Docker File](https://github.com/streambased-io/streambased-demos/blob/main/RAGworkshop/docker-compose.yml)
 
 Entirely local
 
@@ -48,11 +35,11 @@ If you wish to use you own tools for this workshop you will need to install the 
 2. A Jupyter instance with jupysql and sqlalchemy-trino packages installed. A guide to this can be found here: [https://www.streambased.io/tutorial-guides/jupyter](https://www.streambased.io/tutorial-guides/jupyter)
 
 If you are running your own Jupyter notebook/Superset instance please install the following packages:
-```
+```bash
 pip install trino  
 pip install sqlalchemy-trino  
 pip install pandas  
-pip install \-U Cython  
+pip install -U Cython  
 pip install numpy scipy scikit-learn matplotlib  
 pip install openai
 ```
@@ -69,7 +56,7 @@ In this chapter we will learn the main concepts of realtime data (particularly A
 
 The data set we are working with is a publicly available set of captions from trending Youtube videos. It is made available via the open Streambased RDx realtime data marketplace at rdx.streambased.cloud.
 
-Streambased RDx provides a free and open source of realtime data feeds in Kafka format. Please take some time to browse the feeds available. Each feed gives the following information:
+[Streambased RDx](https://rdx.streambased.cloud/) provides a free and open source of realtime data feeds in Kafka format. Please take some time to browse the feeds available. Each feed gives the following information:
 
 1. A feed name  
 2. A short description of the data in the feed - Good versions of these include a description of the structure of messages in the feed. If not don’t worry, we’ll look at this via Schema Registry later  
@@ -103,102 +90,13 @@ The feed we are interested in is named “Youtube Gaming Subtitles” and can be
 
 Copy both of these connection details for use later.
 
-**Step 2: Explore the data using Kafka tools**
-
-This section is based around the tools that come with Apache Kafka, these can be downloaded here: [Link](https://kafka.apache.org/downloads). Let’s perform some common tasks with them.
-
-Note: First, copy all of the connection details retrieved from RDx into a file named client.properties and make a note of the “bootstrap.servers” value. You will need this for the commands below. 
-
-1. Listing topics - A topic is a logical grouping of messages in Kafka we can list all of these in the Kafka cluster using the kafka-topics.sh tool as below:
-
-kafka_2.13-XXX/bin/kafka-topics.sh --bootstrap-server [bootstrap.servers config] --command-config client.properties --list
-
-2. We can describe a particular topic by providing the --describe and --topic arguments:
-
-kafka_2.13-XXX/bin/kafka-topics.sh --bootstrap-server [bootstrap.servers config] --command-config client.properties --describe --topic yt_gaming_subtitles
-
-This will produce an output similar to the below:
-
-```
-`Topic: yt_gaming_subtitles	TopicId: 8b3oleCQTBSx4wfQ0OA3ZA	PartitionCount: 6	ReplicationFactor: 3	Configs: min.insync.replicas=2,cleanup.policy=delete,segment.bytes=104857600,retention.ms=604800000,message.format.version=3.0-IV1,max.compaction.lag.ms=9223372036854775807,max.message.bytes=2097164,min.compaction.lag.ms=0,message.timestamp.type=CreateTime,delete.retention.ms=86400000,retention.bytes=-1,message.timestamp.after.max.ms=9223372036854775807,confluent.topic.type=standard,message.timestamp.before.max.ms=9223372036854775807,segment.ms=604800000,message.timestamp.difference.max.ms=9223372036854775807`  
-	`Topic: yt_gaming_subtitles	Partition: 0	Leader: 13	Replicas: 13,0,11	Isr: 0,13,11	Elr: N/A	LastKnownElr: N/A`  
-	`Topic: yt_gaming_subtitles	Partition: 1	Leader: 14	Replicas: 14,13,15	Isr: 15,13,14	Elr: N/A	LastKnownElr: N/A`  
-	`Topic: yt_gaming_subtitles	Partition: 2	Leader: 0	Replicas: 0,17,10	Isr: 0,10,17	Elr: N/A	LastKnownElr: N/A`  
-	`Topic: yt_gaming_subtitles	Partition: 3	Leader: 7	Replicas: 7,6,2	Isr: 6,7,2	Elr: N/A	LastKnownElr: N/A`  
-	`Topic: yt_gaming_subtitles	Partition: 4	Leader: 8	Replicas: 8,7,9	Isr: 9,7,8	Elr: N/A	LastKnownElr: N/A`  
-	`Topic: yt_gaming_subtitles	Partition: 5	Leader: 3	Replicas: 3,14,4	Isr: 3,4,14	Elr: N/A	LastKnownElr: N/A`
-```
-
-We can learn a lot from this that can help us write high performance queries later. This workshop won’t dive deep into everything but the major points can be found below:
-
-* Partition Count - Kafka is a distributed system and partitions are the way in which data is distributed across a cluster. Kafka provides guarantees that all messages with the same key (more or on this later) will reside on the same partition and will be retrieved in order, however guarantees of ordering between partitions are not provided.  
-* Configs \- Kafka is very very configurable, the documentation covers them all but the important ones are:  
-  * retention.ms \- how long data will be kept on this topic  
-  * cleanup.policy \- how data on this topic should be treated  
-    * Delete \- like a queue, old data is deleted when it gets too old  
-    * Compact \- like a table, the latest version of any key is kept and older versions are deleted.  
-* Replication Factor \- Kafka is a resilient system, the Replication Factor determines how many copies of the data exist in the cluster to provide back ups in case of failure.
-
-3. Viewing message structure \- A message is the smallest unit of information within Kafka, it contains two parts, a key and a value. Neither are mandatory and may be structured or unstructured. When structured the message schema is typically kept in a Schema Registry and we can inspect this to view the structure. Schema Registry provides a REST API for this purpose. Let’s have a look at the schema for our topic:
-
-```bash
-curl -u XXX:XXX [https://psrc-571d82.europe-west2.gcp.confluent.cloud/subjects/yt_gaming_subtitles-value/versions/latest](https://psrc-571d82.europe-west2.gcp.confluent.cloud/subjects/yt_gaming_subtitles-value/versions/latest)
-```
-
-```
-`{`  
-  `"subject": "yt_gaming_subtitles-value",`  
-  `"version": 4,`  
-  `"id": 100006,`  
-  `"schemaType": "JSON",`  
-  `"schema": "{\"$schema\":\"http://json-schema.org/draft-07/schema\",\"description\":\"yt_subtitles_record\",\"properties\":{\"level\":{\"type\":\"integer\"},\"text\":{\"type\":\"string\"},\"timestamp\":{\"type\":\"integer\"}}}"`  
-`}`
-```
-
-From the above we can see that our messages have 3 fields:
-
-* Level \- integer  
-* Text \- string  
-* Timestamp \- integer
-
-4. Fetching some data \- Tools that fetch data from Kafka are called consumers, they start reading data at one point in the log and continue until stopped. The below will start from now and fetch any new messages available on the topic:
-
-```bash
-kafka_2.13-XXX/bin/kafka-console-consumer.sh --bootstrap-server [bootstrap.servers config] --consumer.config client.properties --topic yt_gaming_subtitles
-```
-
-You should see something like the below:
-```
-`{"level":0,"text":"94 overall it's pretty fair if when","timestamp":1724778726384}`  
-`{"level":0,"text":"Davis is not injured and he is on his","timestamp":1724778726547}`  
-`{"level":0,"text":"aame it's clear clear as day that if ant","timestamp":1724778726688}`  
-`{"level":0,"text":"wasn't on the Lakers I think LeBron","timestamp":1724778726830}`  
-`{"level":0,"text":"would have retired like a season or two","timestamp":1724778726971}`  
-`{"level":0,"text":"ago because ant has definitely been","timestamp":1724778727112}`  
-`{"level":0,"text":"saving the Lakers non-stop I believe ant","timestamp":1724778727253}`  
-`{"level":0,"text":"is he's about second or third Center in","timestamp":1724778727395}`  
-`{"level":0,"text":"the NBA uh right behind wet bananas um","timestamp":1724778727536}`  
-`{"level":0,"text":"very very deserved what do you guys have","timestamp":1724778727677}`  
-`{"level":0,"text":"to say about that um despite people","timestamp":1724778727819}`  
-`{"level":0,"text":"trying to roast him and stuff like that","timestamp":1724778727960}`  
-`{"level":0,"text":"obviously Anna is a little bit soft in","timestamp":1724778728101}`  
-`{"level":0,"text":"the paint you know what I'm saying he","timestamp":1724778728243}`  
-`{"level":0,"text":"get pushed around from time to time but","timestamp":1724778728384}`  
-`{"level":0,"text":"ant is a 94 overall solid coming in next","timestamp":1724778728526}`  
-`{"level":0,"text":"Kevin right at a 94","timestamp":1724778728667}`  
-`{"level":0,"text":"overall Easy Money Sniper now for him","timestamp":1724778728809}`  
-`{"level":0,"text":"coming up short in the playoffs I think","timestamp":1724778728950}`  
-`{"level":0,"text":"94 overall is deserved I probably would","timestamp":1724778729091}`  
-`{"level":0,"text":"have bumped it up to about a 95 maybe","timestamp":1724778729237}`
-```
-
-**Step 3: Explore the data using analytical tools**
+**Step 2: Explore the data using analytical tools**
 
 Whilst it is possible to achieve exploratory tasks with the above tools they are very clunky and every task becomes a multi-tool, multi-stage process. Realtime data doesn’t have to be like this however, let’s perform the same tasks using analytical tools.
 
 Note: This section uses Streambased A.S.K., a free, hosted analytical tool for Kafka based on the open source Trino project. 
 
-Streambased A.S.K. offers a JDBC/ODBC/SQL Alchemy connection and so can be integrate with most analytical tools. We love the simplicity of SquirrelSQL but feel free to follow the guides below to connect the tool of your choice.
+Streambased A.S.K. offers a JDBC/ODBC/SQL Alchemy connection and so can be integrate with most analytical tools. We love the simplicity of [SquirrelSQL](https://squirrel-sql.sourceforge.io/) but feel free to follow the guides below to connect the tool of your choice.
 
 [https://www.streambased.io/tutorial-guides](https://www.streambased.io/tutorial-guides)
 
@@ -253,7 +151,7 @@ Go to terminal and install the following package
 
 Google Colab: [https://colab.google/](https://colab.google/):-
 
-	Please install the following packages:(Note install package by running the command on code cell 
+	Please install the following packages:Note install package by running the command on code cell 
 
 * \!pip install openai
 
@@ -349,13 +247,13 @@ day7_timestamp = day6_timestamp - 86400000
 
 """We limit the rows returned for demo performance reasons"""
 
-day1_query = f"SELECT * FROM yt_gaming_subtitles WHERE timestamp > {day1_timestamp_start} AND timestamp < {current_timestamp} LIMIT 5000"  
-day2_query = f"SELECT * FROM yt_gaming_subtitles WHERE timestamp > {day2_timestamp_start} AND timestamp < {day1_timestamp_start} LIMIT 5000"  
-day3_query = f"SELECT * FROM yt_gaming_subtitles WHERE timestamp > {day3_timestamp_start} AND timestamp < {day2_timestamp_start} LIMIT 5000"  
-day4_query = f"SELECT * FROM yt_gaming_subtitles WHERE timestamp > {day4_timestamp_start} AND timestamp < {day3_timestamp_start} LIMIT 5000"  
-day5_query = f"SELECT * FROM yt_gaming_subtitles WHERE timestamp > {day5_timestamp_start} AND timestamp < {day4_timestamp_start} LIMIT 5000"  
-day6_query = f"SELECT * FROM yt_gaming_subtitles WHERE timestamp > {day6_timestamp_start} AND timestamp < {day5_timestamp_start} LIMIT 5000"  
-day7_query = f"SELECT * FROM yt_gaming_subtitles WHERE timestamp > {day7_timestamp_start} AND timestamp < {day6_timestamp_start} LIMIT 5000"
+day1_query = f"SELECT * FROM yt_gaming_subtitles WHERE timestamp > {day1_timestamp} AND timestamp < {current_timestamp} LIMIT 5000"  
+day2_query = f"SELECT * FROM yt_gaming_subtitles WHERE timestamp > {day2_timestamp} AND timestamp < {day1_timestamp} LIMIT 5000"  
+day3_query = f"SELECT * FROM yt_gaming_subtitles WHERE timestamp > {day3_timestamp} AND timestamp < {day2_timestamp} LIMIT 5000"  
+day4_query = f"SELECT * FROM yt_gaming_subtitles WHERE timestamp > {day4_timestamp} AND timestamp < {day3_timestamp} LIMIT 5000"  
+day5_query = f"SELECT * FROM yt_gaming_subtitles WHERE timestamp > {day5_timestamp} AND timestamp < {day4_timestamp} LIMIT 5000"  
+day6_query = f"SELECT * FROM yt_gaming_subtitles WHERE timestamp > {day6_timestamp} AND timestamp < {day5_timestamp} LIMIT 5000"  
+day7_query = f"SELECT * FROM yt_gaming_subtitles WHERE timestamp > {day7_timestamp} AND timestamp < {day6_timestamp} LIMIT 5000"
 ```
 
 
