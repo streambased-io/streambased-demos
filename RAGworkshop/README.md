@@ -19,22 +19,12 @@ By the end of this session you will:
 
 ## Preparation
 
-The workshop is done in several ways this is one of the 
-
 **Prerequisites**
 
-***Docker***
+1. A SQL client capable of connecting via JDBC or SQL Alchemy (we recommend [SQuirreL Sql](https://squirrel-sql.sourceforge.io/)). Streambased provides connection guides here: [https://www.streambased.io/tutorial-guides](https://www.streambased.io/tutorial-guides)  
+2. A Jupyter Notebook with jupysql and sqlalchemy-trino packages installed. A guide to this can be found here: [https://www.streambased.io/tutorial-guides/jupyter](https://www.streambased.io/tutorial-guides/jupyter)
 
-Streambased provides a docker demo that contains all of the tools you will need to complete this workshop. This is available here: [Docker File](https://github.com/streambased-io/streambased-demos/blob/main/RAGworkshop/docker-compose.yml)
-
-Entirely local
-
-If you wish to use you own tools for this workshop you will need to install the following:
-
-1. A SQL client capable of connecting via JDBC or SQL Alchemy (we recommend Apache Superset). Streambased provides connection guides here: [https://www.streambased.io/tutorial-guides](https://www.streambased.io/tutorial-guides)  
-2. A Jupyter instance with jupysql and sqlalchemy-trino packages installed. A guide to this can be found here: [https://www.streambased.io/tutorial-guides/jupyter](https://www.streambased.io/tutorial-guides/jupyter)
-
-If you are running your own Jupyter notebook/Superset instance please install the following packages:
+These are the required packages for this workshop
 ```bash
 pip install trino  
 pip install sqlalchemy-trino  
@@ -50,7 +40,17 @@ A short presentation on the goal and methodology for this workshop can be found 
 
 **Step 0: Goal and methodology**
 
-In this chapter we will learn the main concepts of realtime data (particularly Apache Kafka) and use some of the more common tools and techniques to interact and explore.
+In this chapter we will learn how to query the data that is present in Apache kafka. 
+
+To get an overview of Kafka data, we can map Kafka concepts to more familiar relational database terms:
+
+* **Topic** becomes a **Table**
+* **Message** corresponds to a **Row**
+* **Field** maps to a **Column**
+
+By using this mapping, listing Kafka topics is conceptually similar to listing database tables. Each topic represents a set of messages (rows) that share a common structure, much like how a table contains rows with consistent columns.
+
+This approach provides a clear and structured way to think about Kafka topics and their data, making it easier to reason about and work with the information.
 
 **Step 1: Discover the data set**
 
@@ -87,12 +87,9 @@ The feed we are interested in is named “Youtube Gaming Subtitles” and can be
   `"basic.auth.user.info":"XXXXXX"`  
 `}';`
 ```
-
-Copy both of these connection details for use later.
+Copy the analytical connection details for later use.
 
 **Step 2: Explore the data using analytical tools**
-
-Whilst it is possible to achieve exploratory tasks with the above tools they are very clunky and every task becomes a multi-tool, multi-stage process. Realtime data doesn’t have to be like this however, let’s perform the same tasks using analytical tools.
 
 Note: This section uses Streambased A.S.K., a free, hosted analytical tool for Kafka based on the open source Trino project. 
 
@@ -114,12 +111,8 @@ Remember the analytical connection details we collected from RDx? We can apply t
 `}';`
 ```
 
-1. List topics \- for an analytical view of Kafka data we apply the following mappings:  
-   * Topic \- Table  
-   * Message \- Row  
-   * Field \- Column
 
-By mapping in this way, a listing of topics becomes as simple as:
+1. Listing Topics \- To list all available topics, simply use the following command:
 
 `show tables;`
 
@@ -137,23 +130,16 @@ Note: any column beginning with an underscore is an internal column that reflect
 
 `SELECT * FROM yt_gaming_subtitles LIMIT 100;`
 
-`SELECT text FROM yt_gaming_subtitles WHERE timestamp > 1725526800 LIMIT 100;`
-
 
 **CHAPTER 2: Realtime and RAG**
 
 **Setting up Jupyter notebook:-**  
-Local Machine:-  
-Go to terminal and install the following package 
+ 
+ Go to terminal and install the following package 
 
 * pip install sqlalchemy-trino  
 * pip install openai 
 
-Google Colab: [https://colab.google/](https://colab.google/):-
-
-	Please install the following packages:Note install package by running the command on code cell 
-
-* \!pip install openai
 
 ***Step 0: The AI case***
 
