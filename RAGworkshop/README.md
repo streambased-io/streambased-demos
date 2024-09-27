@@ -19,22 +19,11 @@ By the end of this session you will:
 
 ## Preparation
 
-**Prerequisites**
+Docker
 
-1. A SQL client capable of connecting via JDBC or SQL Alchemy (we recommend [SQuirreL Sql](https://squirrel-sql.sourceforge.io/)). Streambased provides connection guides here: [https://www.streambased.io/tutorial-guides](https://www.streambased.io/tutorial-guides)  
-2. A Jupyter Notebook with jupysql and sqlalchemy-trino packages installed. A guide to this can be found here: [https://www.streambased.io/tutorial-guides/jupyter](https://www.streambased.io/tutorial-guides/jupyter)
+Streambased provides a docker demo that contains all of the tools and packages required to run this workshop [Docker Image](https://github.com/streambased-io/streambased-demos/tree/main/odsc)
 
-These are the required packages for this workshop
-```bash
-pip install trino  
-pip install sqlalchemy-trino  
-pip install pandas  
-pip install -U Cython  
-pip install numpy scipy scikit-learn matplotlib  
-pip install openai
-```
 
-A short presentation on the goal and methodology for this workshop can be found here: [Link](https://docs.google.com/presentation/d/18EeVRAXzRPS_8zP5kws76Gup7fv-h70uyBTXJLA_Yyw/edit?usp=sharing)
 
 ### CHAPTER 1: Bring me realtime!
 
@@ -53,6 +42,8 @@ By using this mapping, listing Kafka topics is conceptually similar to listing d
 This approach provides a clear and structured way to think about Kafka topics and their data, making it easier to reason about and work with the information.
 
 **Step 1: Discover the data set**
+
+In this chapter we are going to use apache superset that is provided by our docker here is a detailed tutorial video on how to set up apache superset [Link](https://www.streambased.io/tutorial-guides/connecting-ask-superset)
 
 The data set we are working with is a publicly available set of captions from trending Youtube videos. It is made available via the open Streambased RDx realtime data marketplace at rdx.streambased.cloud.
 
@@ -133,13 +124,7 @@ Note: any column beginning with an underscore is an internal column that reflect
 
 **CHAPTER 2: Realtime and RAG**
 
-**Setting up Jupyter notebook:-**  
- 
- Go to terminal and install the following package 
-
-* pip install sqlalchemy-trino  
-* pip install openai 
-
+In this chapter please open the Jupyter notebook provided by our docker using localhost:8888
 
 ***Step 0: The AI case***
 
