@@ -19,7 +19,15 @@ By the end of this session you will:
 
 ## Preparation
 
-Docker
+**What is Kafka?**
+
+![image7](images/image7.png)
+
+Kafka is a powerful tool that helps different parts of a system communicate with each other in real-time. Think of it as a high-speed messaging system that allows one application to send messages and another to receive them without delay. These messages can be anything from user activity on a website, system logs, or data coming from sensors. Kafka is built to handle massive amounts of data quickly and efficiently, making it ideal for applications that need to process and analyze data as it happens. It ensures that all the information flows smoothly and is stored reliably, so you can access it whenever needed.
+
+**Prerequisite**
+
+**Docker**
 
 Streambased provides a docker demo that contains all of the tools and packages required to run this workshop [Docker Image](https://github.com/streambased-io/streambased-demos/tree/main/odsc)
 
@@ -123,6 +131,13 @@ Note: any column beginning with an underscore is an internal column that reflect
 
 
 **CHAPTER 2: Realtime and RAG**
+
+**Preparation**
+
+**What is RAG system?**
+![image8](images/image8.png)
+A Recommendation and Advisory Generation (RAG) system is a tool that helps users make informed decisions by providing personalized suggestions. It analyzes data about a user's preferences, past behavior, or current context and uses that information to recommend relevant content, products, or actions. For example, an online store might suggest items based on your previous purchases, or a movie streaming service might recommend shows you’re likely to enjoy. RAG systems are designed to simplify decision-making by guiding users toward the most relevant or helpful options based on their needs and interests.
+
 
 In this chapter please open the Jupyter notebook provided by our docker using localhost:8888
 
