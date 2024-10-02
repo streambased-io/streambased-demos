@@ -61,9 +61,10 @@ services:
       SCHEMA_REGISTRY_SCHEMA_REGISTRY_GROUP_ID: schema-registry
 
 
-  streambased-arm:
+  streambased-server:
     image: streambased-arm:local
-    hostname: streambased-arm
+    hostname: streambased-server
+    platform: linux/arm64
     ports:
       - '8080:8080'
     volumes:
@@ -77,7 +78,7 @@ services:
       context: ./superset
       dockerfile: Dockerfile
     container_name: superset
-    platform: linux/amd64
+    platform: linux/arm64
     environment:
       - ADMIN_USERNAME=admin
       - ADMIN_EMAIL=admin@superset.com
@@ -90,7 +91,7 @@ services:
       context: ./jupyter
       dockerfile: Dockerfile
     container_name: jupyter
-    platform: linux/amd64
+    platform: linux/arm64
     command: sleep infinity
     ports:
       - '8888:8888'
@@ -103,7 +104,7 @@ services:
   shadowtraffic:
     image: shadowtraffic/shadowtraffic:latest
     hostname: shadowtraffic
-    platform: linux/amd64
+    platform: linux/arm64
     depends_on:
       - schema-registry
     volumes:
