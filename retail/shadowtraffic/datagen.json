@@ -1,123 +1,31 @@
 {
   "generators": [
     {
-      "topic": "transactions",
+      "topic": "customers",
       "value": {
-        "storeId": {
+        "id": {
           "_gen": "string",
-          "expr": "#{Country.countryCode2}-#{Number.numberBetween '1000','9999'}"
+          "expr": "#{IdNumber.ssnValid}"
         },
-        "amount" : {
-          "_gen": "uniformDistribution",
-          "bounds": [
-            10,
-            100
-          ]
-        },
-        "paymentTermCode" : {
+        "name": {
           "_gen": "string",
-          "expr": "#{Country.countryCode3}"
+          "expr": "#{FunnyName.name}"
         },
-        "paymentTime" : {
-          "_gen": "sequentialInteger",
-          "startingFrom": 1718011807
-        },
-        "itemCode" : {
+        "state": {
           "_gen": "string",
-          "expr": "#{Code.ean8}"
+          "expr": "#{Address.state}"
+        },
+        "address": {
+          "_gen": "string",
+          "expr": "#{Address.streetAddress}"
+        },
+        "zipcode": {
+          "_gen": "string",
+          "expr": "#{Address.zipCode}"
         }
       },
       "localConfigs": {
-        "events": {
-          "exactly": 1000000
-        }
-      }
-    },
-    {
-      "topic": "payment_terms",
-      "value": {
-        "termCode": {
-          "_gen": "string",
-          "expr": "#{Country.countryCode3}"
-        },
-        "currency": {
-          "_gen": "string",
-          "expr": "#{Country.currencyCode}"
-        },
-        "exchangeRate": {
-          "_gen": "subtract",
-          "args": [
-            1002.0,
-            {
-              "_gen": "divide",
-              "args": [
-                {
-                  "_gen": "normalDistribution",
-                  "mean": {
-                    "_gen": "now"
-                  },
-                  "sd": 50000,
-                  "decimals": 4
-                },
-                1718011807.0
-              ]
-            }
-          ]
-        },
-        "daysToSettle": {
-          "_gen": "oneOf",
-          "choices": [
-            30,
-            60,
-            90
-          ]
-        },
-        "updateTime": {
-          "_gen": "normalDistribution",
-          "mean": 1719011807,
-          "sd": 500000,
-          "decimals": 0
-        }
-      },
-      "localConfigs": {
-        "events": {
-          "exactly": 1000
-        }
-      }
-    },
-    {
-      "topic": "transactions",
-      "value": {
-        "storeId": "ZZ-123",
-        "amount": 0.0,
-        "paymentTermCode": "zwd",
-        "paymentTime": {
-          "_gen": "normalDistribution",
-          "mean": 1719011807,
-          "sd": 500000,
-          "decimals": 0
-        },
-        "itemCode": "135798642"
-      },
-      "localConfigs": {
-        "events": {
-          "exactly": 1000
-        }
-      }
-    },
-    {
-      "topic": "payment_terms",
-      "value": {
-        "termCode": "zwd",
-        "currency": "ZWD",
-        "exchangeRate": 9223372036854775806.0,
-        "daysToSettle": 30,
-        "updateTime" : 1719011807.0
-      },
-      "localConfigs": {
-        "events": {
-          "exactly": 1
-        }
+        "throughput": 1
       }
     }
   ],
@@ -125,10 +33,16 @@
     "kafka": {
       "kind": "kafka",
       "producerConfigs": {
-        "bootstrap.servers": "kafka1:9092",
         "key.serializer": "io.shadowtraffic.kafka.serdes.JsonSerializer",
         "value.serializer": "io.confluent.kafka.serializers.KafkaAvroSerializer",
-        "schema.registry.url": "http://schema-registry:8081"
+        "bootstrap.servers" : "pkc-12576z.us-west2.gcp.confluent.cloud:9092",
+        "sasl.jaas.config": "org.apache.kafka.common.security.plain.PlainLoginModule required username='7FZAJHHSUUENVXPX' password='Mkh6SWV0EGxgQwwHo2Zpd+YJ25e+uuNIGIqRNSsmVzI+39cAWJTCmG4tIPcdaCWE';",
+        "security.protocol":"SASL_SSL",
+        "sasl.mechanism":"PLAIN",
+        "client.dns.lookup":"use_all_dns_ips",
+        "schema.registry.url" : "https://psrc-7nzodo.us-west2.gcp.confluent.cloud",
+        "basic.auth.credentials.source":"USER_INFO",
+        "basic.auth.user.info":"VIH5FYUKUPNHGK2U:rO17jCAiSnfDJMW/QzsFwH/P/ALLY5O/PW9CRsm5NujOZNzku8Q38xEUcgZjiQ24"
       }
     }
   }

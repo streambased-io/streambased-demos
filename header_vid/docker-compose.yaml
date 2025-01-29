@@ -67,50 +67,27 @@ services:
     platform: linux/amd64
     ports:
       - '8080:8080'
-      - '8443:8443'
     volumes:
       - type: bind
-        source: "./serverConfig"
-        target: /etc/streambased/etc
+        source: "./serverConfig/client.properties"
+        target: /etc/streambased/etc/client.properties
         read_only: true
-
-  superset:
-    build:
-      context: ./superset
-      dockerfile: Dockerfile
-    container_name: superset
-    platform: linux/amd64
-    environment:
-      - ADMIN_USERNAME=admin
-      - ADMIN_EMAIL=admin@superset.com
-      - ADMIN_PASSWORD=admin
-    ports:
-      - '8088:8088'
-
-  jupyter:
-    build:
-      context: ./jupyter
-      dockerfile: Dockerfile
-    container_name: jupyter
-    platform: linux/amd64
-    command: sleep infinity
-    ports:
-      - '8888:8888'
-    volumes:
       - type: bind
-        source: "./notebooks"
-        target: /notebooks
-        read_only: false
+        source: "./serverConfig/catalog/kafka.properties"
+        target: /etc/streambased/etc/catalog/kafka.properties
+        read_only: true
 
   shadowtraffic:
     image: shadowtraffic/shadowtraffic:latest
     hostname: shadowtraffic
     platform: linux/amd64
+    depends_on:
+      - schema-registry
     volumes:
       - type: bind
         source: "./shadowtraffic"
         target: /etc/shadowtraffic
         read_only: true
-    env_file: "shadowtraffic/free-trial-license.env"
+    env_file: "shadowtraffic/enterprise-license.env"
     command: --config /etc/shadowtraffic/datagen.json --seed 1234
     restart: on-failure

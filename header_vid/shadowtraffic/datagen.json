@@ -1,0 +1,85 @@
+{
+  "generators": [
+    {
+      "topic": "surveys",
+      "key": {
+        "surveyid": {
+          "_gen": "uuid"
+        }
+      },
+      "value": {
+        "Q1_question": "How often do you work out at this gym?",
+        "Q1_answer": {
+          "_gen": "oneOf",
+          "choices": [
+            "every day",
+            "twice or more a week",
+            "twice or more a month"
+          ]
+        },
+        "Q2_question": "Do you think the price of this gym is fair?",
+        "Q2_answer": {
+          "_gen": "oneOf",
+          "choices": [
+            "Yes",
+            "No"
+          ]
+        },
+        "Q3_question": "Which of the following would make you go to the gym more?",
+        "Q3_answer": {
+          "_gen": "oneOf",
+          "choices": [
+            "A health tracking app",
+            "A free month",
+            "Newer machines"
+          ]
+        }
+      },
+      "headers": [
+        {
+          "key": "appversion",
+          "value": {
+            "_gen": "weightedOneOf",
+            "choices": [
+              {
+                "weight": 50000,
+                "value": "v3.0"
+              },
+              {
+                "weight": 40000,
+                "value": "v2.0"
+              },
+              {
+                "weight": 10,
+                "value": "v1.0"
+              }
+            ]
+          }
+        },
+        {
+          "key": "surveyor",
+          "value": {
+            "_gen": "string",
+            "expr": "#{FunnyName.name}"
+          }
+        }
+      ],
+      "localConfigs": {
+        "events": {
+          "exactly": 1000000
+        }
+      }
+    }
+  ],
+  "connections": {
+    "kafka": {
+      "kind": "kafka",
+      "producerConfigs": {
+        "bootstrap.servers": "kafka1:9092",
+        "key.serializer": "io.confluent.kafka.serializers.KafkaAvroSerializer",
+        "value.serializer": "io.confluent.kafka.serializers.KafkaAvroSerializer",
+        "schema.registry.url": "http://schema-registry:8081"
+      }
+    }
+  }
+}
