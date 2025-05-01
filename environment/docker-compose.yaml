@@ -1,0 +1,197 @@
+version: '3.7'
+services:
+
+  zookeeper1:
+    image: "confluentinc/cp-zookeeper:7.5.0"
+    hostname: zookeeper
+    environment:
+      ZOOKEEPER_CLIENT_PORT: 2181
+      ZOOKEEPER_TICK_TIME: "2000"
+    ports:
+      - 2181:2181
+
+  kafka1:
+    image: "confluentinc/cp-kafka:7.5.0"
+    hostname: kafka1
+    ports:
+      - 9092:9092
+    depends_on:
+      - zookeeper1
+    environment:
+      KAFKA_BROKER_ID: 1
+      KAFKA_ZOOKEEPER_CONNECT: "zookeeper1:2181"
+      KAFKA_REPLICATION_FACTOR: 1
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+      KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: 1
+      KAFKA_TRANSACTION_STATE_LOG_MIN_ISR: 1
+      KAFKA_DEFAULT_REPLICATION_FACTOR: 1
+      KAFKA_GROUP_INITIAL_REBALANCE_DELAY_MS: 0
+      KAFKA_LOG4J_LOGGERS: "kafka.authorizer.logger=INFO"
+      KAFKA_LOG4J_ROOT_LOGLEVEL: WARN
+      KAFKA_AUTO_CREATE_TOPICS_ENABLE: "false"
+      KAFKA_INTER_BROKER_LISTENER_NAME: PLAINTEXT
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka1:9092
+
+  schema-registry:
+    image: confluentinc/cp-schema-registry:7.5.0
+    hostname: schema-registry
+    container_name: schema-registry
+    depends_on:
+      - kafka1
+    ports:
+      - "8081:8081"
+    environment:
+      SCHEMA_REGISTRY_HOST_NAME: schema-registry
+      SCHEMA_REGISTRY_KAFKASTORE_BOOTSTRAP_SERVERS: kafka1:9092
+      SCHEMA_REGISTRY_LOG4J_ROOT_LOGLEVEL: WARN
+      SCHEMA_REGISTRY_LISTENERS: "http://0.0.0.0:8081"
+      SCHEMA_REGISTRY_KAFKASTORE_TOPIC: _schemas
+      SCHEMA_REGISTRY_SCHEMA_REGISTRY_GROUP_ID: schema-registry
+
+  streambased-server:
+    image: local/streambased-enterprise:latest
+    hostname: streambased-server
+    platform: linux/amd64
+    ports:
+      - '8080:8080'
+    volumes:
+      - type: bind
+        source: "./streambased/client.properties"
+        target: /etc/streambased/etc/client.properties
+        read_only: true
+
+  shadowtraffic:
+    image: shadowtraffic/shadowtraffic:latest
+    hostname: shadowtraffic
+    platform: linux/amd64
+    depends_on:
+      - schema-registry
+    volumes:
+      - type: bind
+        source: "./shadowtraffic"
+        target: /etc/shadowtraffic
+        read_only: true
+    env_file: "shadowtraffic/license.env"
+    command: --config /etc/shadowtraffic/datagen.json --seed 1234
+    restart: on-failure
+
+  db:
+    container_name: db
+    hostname: db
+    image: mysql
+    ports:
+      - 3306:3306
+    healthcheck:
+      test: mysqladmin ping -h 127.0.0.1 -u $$MYSQL_USER --password=$$MYSQL_PASSWORD
+      start_period: 5s
+      interval: 5s
+      timeout: 5s
+      retries: 55
+    environment:
+      - MYSQL_DATABASE=streambased
+      - MYSQL_ROOT_PASSWORD=streambased
+    command:
+      [
+        "--character-set-server=utf8mb4",
+        "--collation-server=utf8mb4_unicode_ci",
+      ]
+
+  connect:
+    image: confluentinc/cp-kafka-connect:7.5.0
+    container_name: connect
+    restart: always
+    depends_on:
+      - schema-registry
+    healthcheck:
+      test: curl localhost:8083
+      start_period: 5s
+      interval: 5s
+      timeout: 5s
+      retries: 55
+    volumes:
+      - ./plugins:/usr/share/plugins
+      - ./pipeline:/tmp/pipeline:rw
+    ports:
+      - 8083:8083
+    environment:
+
+      CONNECT_BOOTSTRAP_SERVERS: kafka1:9092
+      CONNECT_LISTENERS: http://0.0.0.0:8083
+      CONNECT_GROUP_ID: "connect"
+      CONNECT_PRODUCER_CLIENT_ID: "connect-worker-producer"
+      CONNECT_PRODUCER_ENABLE_IDEMPOTENCE: 'true'
+
+      CONNECT_CONFIG_STORAGE_TOPIC: connect-configs
+      CONNECT_OFFSET_STORAGE_TOPIC: connect-offsets
+      CONNECT_STATUS_STORAGE_TOPIC: connect-statuses
+
+      CONNECT_REPLICATION_FACTOR: 1
+      CONNECT_CONFIG_STORAGE_REPLICATION_FACTOR: 1
+      CONNECT_OFFSET_STORAGE_REPLICATION_FACTOR: 1
+      CONNECT_STATUS_STORAGE_REPLICATION_FACTOR: 1
+
+      CONNECT_KEY_CONVERTER: "org.apache.kafka.connect.storage.StringConverter"
+      CONNECT_VALUE_CONVERTER: "io.confluent.connect.avro.AvroConverter"
+      CONNECT_VALUE_CONVERTER_SCHEMA_REGISTRY_URL: "http://schema-registry:8081"
+
+      CONNECT_REST_ADVERTISED_HOST_NAME: connect
+      CONNECT_PLUGIN_PATH: "/usr/share/java,/usr/share/plugins"
+
+      # Reduce Connect memory utilization
+      KAFKA_JVM_PERFORMANCE_OPTS: -server -XX:+UseG1GC -XX:GCTimeRatio=1
+        -XX:MinHeapFreeRatio=10 -XX:MaxHeapFreeRatio=20
+        -XX:MaxGCPauseMillis=10000 -XX:InitiatingHeapOccupancyPercent=35 -XX:+ExplicitGCInvokesConcurrent
+        -XX:MaxInlineLevel=15 -Djava.awt.headless=true
+
+  pipeline:
+    image: mysql
+    container_name: pipeline
+    restart: always
+    depends_on:
+      connect:
+        condition: service_healthy
+      db:
+        condition: service_healthy
+    command: 'sh -c /tmp/external.sh'
+    volumes:
+      - ./pipeline:/tmp/pipeline:rw
+      - ./scripts/external.sh:/tmp/external.sh
+      - ./scripts/connector.json:/tmp/connector.json
+
+  superset:
+    build:
+      context: ./superset
+      dockerfile: Dockerfile
+    container_name: superset
+    depends_on:
+      - schema-registry
+    platform: linux/amd64
+    environment:
+      - ADMIN_USERNAME=admin
+      - ADMIN_EMAIL=admin@superset.com
+      - ADMIN_PASSWORD=admin
+    ports:
+      - '8088:8088'
+
+  akhq:
+    image: tchiotludo/akhq:latest
+    container_name: akhq
+    depends_on:
+      - schema-registry
+    platform: linux/amd64
+    environment:
+      AKHQ_CONFIGURATION: |
+        akhq:
+          connections:
+            docker-kafka-server:
+              properties:
+                bootstrap.servers: "kafka1:9092"
+              schema-registry:
+                url: "http://schema-registry:8081"
+              connect:
+                - name: "connect"
+                  url: "http://connect:8083"
+    ports:
+      - '9090:8080'
+

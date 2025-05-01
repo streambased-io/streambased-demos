@@ -1,0 +1,9 @@
+{
+  "name": "shell-sink",
+  "config": {
+    "connector.class": "uk.co.threefi.connect.shell.ShellSinkConnector",
+    "tasks.max": "1",
+    "shell.command": "echo \"${value}\" | sed -e 's/,/,=/g' | cut -d '=' -f 2,4,6,8,10 | sed -e 's/=//g' | sed -e 's/}//g' >> /tmp/pipeline/$(date +\"%H_%M\".out)",
+    "topics": "transactions"
+  }
+}
