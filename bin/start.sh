@@ -21,6 +21,11 @@ then
 fi
 mkdir -p $SCRIPT_DIR/../environment/scripts
 rm -rf $SCRIPT_DIR/../environment/pipeline/*
+if [ -d "$SCRIPT_DIR/../environment/pipeline" ]
+then
+    rm -rf $SCRIPT_DIR/../environment/pipeline
+fi
+mkdir -p $SCRIPT_DIR/../environment/pipeline
 
 
 # fetch shadowtraffic license
