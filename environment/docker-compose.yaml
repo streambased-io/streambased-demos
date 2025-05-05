@@ -138,6 +138,8 @@ services:
       CONNECT_REST_ADVERTISED_HOST_NAME: connect
       CONNECT_PLUGIN_PATH: "/usr/share/java,/usr/share/plugins"
 
+      CLASSPATH: "/usr/share/plugins/mysql-connector-j-9.3.0.jar"
+
       # Reduce Connect memory utilization
       KAFKA_JVM_PERFORMANCE_OPTS: -server -XX:+UseG1GC -XX:GCTimeRatio=1
         -XX:MinHeapFreeRatio=10 -XX:MaxHeapFreeRatio=20
@@ -195,3 +197,15 @@ services:
     ports:
       - '9090:8080'
 
+  dbt:
+    build:
+      context: dbt
+      dockerfile: Dockerfile
+    container_name: dbt
+    platform: linux/amd64
+    command: sleep infinity
+    volumes:
+      - type: bind
+        source: "./dbtConfig"
+        target: /etc/dbtConfig
+        read_only: true

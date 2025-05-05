@@ -1,0 +1,12 @@
+streambased_dbt:
+  target: dev
+  outputs:
+    dev:
+      type: trino
+      method: none
+      user: e30=
+      database: kafka
+      host: streambased-server
+      port: 8080
+      schema: streambased
+      threads: 1

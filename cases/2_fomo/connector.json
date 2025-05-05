@@ -1,0 +1,11 @@
+{
+  "name": "jdbc-sink",
+  "config": {
+    "connector.class": "io.confluent.connect.jdbc.JdbcSinkConnector",
+    "tasks.max": "1",
+    "connection.url":"jdbc:mysql://db:3306/streambased",
+    "connection.user": "root",
+    "connection.password": "streambased",
+    "topics": "purchases"
+  }
+}
