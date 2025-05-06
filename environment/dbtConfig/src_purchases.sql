@@ -1,0 +1,1 @@
+SELECT customerid, sum(amount) AS total FROM kafka.streambased.purchases GROUP BY customerid

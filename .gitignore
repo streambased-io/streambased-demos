@@ -6,3 +6,8 @@
 **gaming_subtitles.json
 
 **.ipynb_checkpoints**
+
+environment/shadowtraffic**
+environment/streambased**
+environment/pipeline/**
+environment/scripts/**

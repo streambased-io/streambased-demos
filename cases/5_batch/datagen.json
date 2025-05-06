@@ -1,0 +1,38 @@
+{
+  "generators": [
+    {
+      "topic": "purchases",
+      "value": {
+        "customerId": {
+          "_gen": "string",
+          "expr": "CU-#{Number.numberBetween '1000','2000'}"
+        },
+        "amount" : {
+          "_gen": "uniformDistribution",
+          "bounds": [
+            10,
+            100
+          ]
+        },
+        "itemCode" : {
+          "_gen": "string",
+          "expr": "#{Code.ean8}"
+        }
+      },
+      "localConfigs": {
+        "throughput": 2
+      }
+    }
+  ],
+  "connections": {
+    "kafka": {
+      "kind": "kafka",
+      "producerConfigs": {
+        "bootstrap.servers": "kafka1:9092",
+        "key.serializer": "io.shadowtraffic.kafka.serdes.JsonSerializer",
+        "value.serializer": "io.confluent.kafka.serializers.KafkaAvroSerializer",
+        "schema.registry.url": "http://schema-registry:8081"
+      }
+    }
+  }
+}
