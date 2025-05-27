@@ -50,7 +50,7 @@ services:
       SCHEMA_REGISTRY_SCHEMA_REGISTRY_GROUP_ID: schema-registry
 
   streambased-server:
-    image: local/streambased-enterprise:latest
+    image: streambased/streambased-enterprise:latest
     hostname: streambased-server
     platform: linux/amd64
     ports:

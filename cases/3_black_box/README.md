@@ -79,6 +79,11 @@ There are more datasets available here:
 SELECT * FROM transactions WHERE storeid='ZZ-123';
 ```
 
+> 📝 This query takes advantage of Streambased acceleration. Streambased created an index over the underlying topic
+> meaning only records with the designated criteria are fetched from Kafka. This query is typically 30x-50x faster than
+> it's equivalent without acceleration. If you wish to compare with an unindexed version run 
+> `SET SESSION use_streambased=false;` immediately before execution.
+
 ### Step 4: Investigate further
 
 Something's clearly not right here. All the transactions for our store have a 0 amount. That's not valid 
@@ -91,15 +96,20 @@ join the transactions and payment_terms topics:
 SELECT * FROM transactions t JOIN payment_terms p ON t.paymenttermcode = p.termcode WHERE t.storeid='ZZ-123'
 ```
 
-### Step 5: Resolve the issue
+### Step 5: Confirm the issue
 
-here we can clearly see the problem! The exchangerate column shows a huge value meaning it's likely 
-that any currency conversion will result in a 0 amount. However, just to sanity check let's find 
-the average exchange rate across the other payment terms:
+Here we can clearly see the problem! The exchangerate column shows a huge value meaning it's likely 
+that any currency conversion will result in a 0 amount. However, we have not yet determined the scope of the problem, 
+does it only affect `ZWD` or are other payment codes affected? We can check the total amount of sales for each code 
+to confirm:  
 
 ```SQL
-SELECT avg(exchangerate) FROM payment_terms WHERE termcode != 'zwd'
+SELECT paymentTermCode, sum(amount) FROM transactions GROUP BY paymentTermCode;
 ```
 
-That confirms it, this is clearly an anomaly, and we can take immediate action. The most likely 
-solution is to suspend sales in ZWD.
+> 📝 This query takes advantage of Streambased acceleration. Streambased pre-calculated sum/max/min/count for blocks of 
+> Kafka data ahead of query time. This query is typically 10x faster than it's equivalent without acceleration. If you 
+> wish to compare with an unindexed version run `SET SESSION use_streambased=false;` immediately before execution.
+
+That confirms it, this is clearly an anomaly as only `ZWD` shows a zero total. We can now take immediate action, most 
+likely suspending sales in ZWD.
