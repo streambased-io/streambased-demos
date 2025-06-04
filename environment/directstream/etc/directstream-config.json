@@ -19,5 +19,6 @@
   "test.execution.mode": "docker",
   "external.hostname": "directstream",
   "kafka.bootstrap.servers": "kafka1:9092",
-  "schema-registry.url": "http://schema-registry:8081"
+  "schema-registry.url": "http://schema-registry:8081",
+  "config.service.url": "ignored"
 }
