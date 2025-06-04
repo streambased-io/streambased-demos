@@ -209,3 +209,37 @@ services:
         source: "./dbtConfig"
         target: /etc/dbtConfig
         read_only: true
+
+  spark-iceberg:
+    image: tabulario/spark-iceberg
+    hostname: spark
+    container_name: spark-iceberg
+    volumes:
+      - ./spark/warehouse:/home/iceberg/warehouse
+      - ./spark/notebooks:/home/iceberg/notebooks/notebooks
+      - ./spark/spark-defaults.conf:/opt/spark/conf/spark-defaults.conf
+    environment:
+      - AWS_ACCESS_KEY_ID=dummyapi
+      - AWS_SECRET_ACCESS_KEY=dummysecret
+      - AWS_REGION=us-east-1
+    ports:
+      - 8888:8888
+      - 10000:10000
+      - 10001:10001
+      - 4040-4050:4040-4050
+
+  directstream:
+    image: streambased/directstream:demo
+    hostname: directstream
+    container_name: directstream
+    platform: linux/amd64
+    depends_on:
+      - shadowtraffic
+    restart: on-failure
+    volumes:
+      - "./directstream/etc/directstream-config.json:/app/etc/directstream-config.json"
+      - "./directstream/etc/indexer.properties:/app/etc/indexer.properties"
+      - "./directstream/etc/logback.xml:/app/etc/logback.xml"
+    ports:
+      - 11000:11000
+      - 11001:11001

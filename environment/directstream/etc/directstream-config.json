@@ -1,0 +1,23 @@
+{
+  "port": 11000,
+  "catalog": {
+    "port": 11001,
+    "partitioning": {
+      "tables": [
+        {
+          "name": "transactions",
+          "partitions": [
+            {
+              "field": "transactionTime",
+              "type": "TIMESTAMP_HOUR"
+            }
+          ]
+        }
+      ]
+    }
+  },
+  "test.execution.mode": "docker",
+  "external.hostname": "directstream",
+  "kafka.bootstrap.servers": "kafka1:9092",
+  "schema-registry.url": "http://schema-registry:8081"
+}
