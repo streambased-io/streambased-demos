@@ -76,7 +76,7 @@ Within each bucket we see files corresponding to Kafka data, these can be downlo
 ### As an Iceberg table.
 
 The main reason for the above functionality is to support Apache Iceberg tables. Iceberg consists of a set of data 
-files and a set of metadata files tht describe access to them. We have already created the data files above and 
+files and a set of metadata files that describe access to them. We have already created the data files above and 
 Streambased goes further to create ephemeral metadata files to allow Iceberg client to interact with it. What's more 
 we can use Streambased indexing to power features like partitioning within the Iceberg spec.
 
