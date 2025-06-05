@@ -168,6 +168,70 @@
       }
     },
     {
+      "topic": "transactions",
+      "value": {
+        "storeId": "ZZ-124",
+        "amount" : {
+          "_gen": "uniformDistribution",
+          "bounds": [
+            10,
+            100
+          ]
+        },
+        "paymentTermCode" : {
+          "_gen": "string",
+          "expr": "#{Country.countryCode3}",
+          "cardinality": 10
+        },
+        "transactionTime": {
+          "_gen": "sequentialInteger",
+          "startingFrom": 1745157601000000,
+          "advanceBy": 400000
+        },
+        "itemCode" : {
+          "_gen": "string",
+          "expr": "#{Code.ean8}",
+          "cardinality": 10
+        }
+      },
+      "localConfigs": {
+        "events": {
+          "exactly": 1000
+        },
+        "avroSchemaHint": {
+          "value": {
+            "type": "record",
+            "name": "transactionsValue",
+            "fields": [
+              {
+                "name": "storeId",
+                "type": "string"
+              },
+              {
+                "name": "amount",
+                "type": "double"
+              },
+              {
+                "name": "paymentTermCode",
+                "type": "string"
+              },
+              {
+                "name": "itemCode",
+                "type": "string"
+              },
+              {
+                "name": "transactionTime",
+                "type": {
+                  "type": "long",
+                  "logicalType": "timestamp-micros"
+                }
+              }
+            ]
+          }
+        }
+      }
+    },
+    {
       "topic": "payment_terms",
       "value": {
         "termCode": "zwd",

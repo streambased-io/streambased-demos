@@ -31,6 +31,13 @@ mkdir -p $SCRIPT_DIR/../environment/pipeline
 # fetch shadowtraffic license
 curl  https://raw.githubusercontent.com/ShadowTraffic/shadowtraffic-examples/refs/heads/master/free-trial-license.env > $SCRIPT_DIR/../environment/shadowtraffic/license.env
 
+# make docker compose
+cat $SCRIPT_DIR/../environment/docker-compose.core.part.yaml > $SCRIPT_DIR/../environment/docker-compose.yaml
+if [ -f "$SCRIPT_DIR/../cases/$DEMO_DIR/connector.json" ] || [ -f "$SCRIPT_DIR/../cases/$DEMO_DIR/external.sh" ]
+then
+  cat $SCRIPT_DIR/../environment/docker-compose.multi-system.part.yaml >> $SCRIPT_DIR/../environment/docker-compose.yaml
+fi
+
 # copy in config files
 cp $SCRIPT_DIR/../cases/$DEMO_DIR/client.properties $SCRIPT_DIR/../environment/streambased
 cp $SCRIPT_DIR/../cases/$DEMO_DIR/datagen.json $SCRIPT_DIR/../environment/shadowtraffic

@@ -1,0 +1,97 @@
+  db:
+    container_name: db
+    hostname: db
+    image: mysql
+    ports:
+      - 3306:3306
+    healthcheck:
+      test: mysqladmin ping -h 127.0.0.1 -u $$MYSQL_USER --password=$$MYSQL_PASSWORD
+      start_period: 5s
+      interval: 5s
+      timeout: 5s
+      retries: 55
+    environment:
+      - MYSQL_DATABASE=streambased
+      - MYSQL_ROOT_PASSWORD=streambased
+    command:
+      [
+        "--character-set-server=utf8mb4",
+        "--collation-server=utf8mb4_unicode_ci",
+      ]
+
+  connect:
+    image: confluentinc/cp-kafka-connect:7.5.0
+    container_name: connect
+    restart: always
+    depends_on:
+      - schema-registry
+    healthcheck:
+      test: curl localhost:8083
+      start_period: 5s
+      interval: 5s
+      timeout: 5s
+      retries: 55
+    volumes:
+      - ./plugins:/usr/share/plugins
+      - ./pipeline:/tmp/pipeline:rw
+    ports:
+      - 8083:8083
+    environment:
+
+      CONNECT_BOOTSTRAP_SERVERS: kafka1:9092
+      CONNECT_LISTENERS: http://0.0.0.0:8083
+      CONNECT_GROUP_ID: "connect"
+      CONNECT_PRODUCER_CLIENT_ID: "connect-worker-producer"
+      CONNECT_PRODUCER_ENABLE_IDEMPOTENCE: 'true'
+
+      CONNECT_CONFIG_STORAGE_TOPIC: connect-configs
+      CONNECT_OFFSET_STORAGE_TOPIC: connect-offsets
+      CONNECT_STATUS_STORAGE_TOPIC: connect-statuses
+
+      CONNECT_REPLICATION_FACTOR: 1
+      CONNECT_CONFIG_STORAGE_REPLICATION_FACTOR: 1
+      CONNECT_OFFSET_STORAGE_REPLICATION_FACTOR: 1
+      CONNECT_STATUS_STORAGE_REPLICATION_FACTOR: 1
+
+      CONNECT_KEY_CONVERTER: "org.apache.kafka.connect.storage.StringConverter"
+      CONNECT_VALUE_CONVERTER: "io.confluent.connect.avro.AvroConverter"
+      CONNECT_VALUE_CONVERTER_SCHEMA_REGISTRY_URL: "http://schema-registry:8081"
+
+      CONNECT_REST_ADVERTISED_HOST_NAME: connect
+      CONNECT_PLUGIN_PATH: "/usr/share/java,/usr/share/plugins"
+
+      CLASSPATH: "/usr/share/plugins/mysql-connector-j-9.3.0.jar"
+
+      # Reduce Connect memory utilization
+      KAFKA_JVM_PERFORMANCE_OPTS: -server -XX:+UseG1GC -XX:GCTimeRatio=1
+        -XX:MinHeapFreeRatio=10 -XX:MaxHeapFreeRatio=20
+        -XX:MaxGCPauseMillis=10000 -XX:InitiatingHeapOccupancyPercent=35 -XX:+ExplicitGCInvokesConcurrent
+        -XX:MaxInlineLevel=15 -Djava.awt.headless=true
+
+  pipeline:
+    image: mysql
+    container_name: pipeline
+    restart: always
+    depends_on:
+      connect:
+        condition: service_healthy
+      db:
+        condition: service_healthy
+    command: 'sh -c /tmp/external.sh'
+    volumes:
+      - ./pipeline:/tmp/pipeline:rw
+      - ./scripts/external.sh:/tmp/external.sh
+      - ./scripts/connector.json:/tmp/connector.json
+
+  dbt:
+    build:
+      context: dbt
+      dockerfile: Dockerfile
+    container_name: dbt
+    platform: linux/amd64
+    command: sleep infinity
+    volumes:
+      - type: bind
+        source: "./dbtConfig"
+        target: /etc/dbtConfig
+        read_only: true
