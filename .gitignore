@@ -11,3 +11,4 @@ environment/shadowtraffic**
 environment/streambased**
 environment/pipeline/**
 environment/scripts/**
+environment/docker-compose.yaml

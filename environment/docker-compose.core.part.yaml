@@ -41,6 +41,11 @@ services:
       - kafka1
     ports:
       - "8081:8081"
+    healthcheck:
+      start_period: 10s
+      interval: 10s
+      retries: 20
+      test: curl --fail --silent http://schema-registry:8081/subjects --output /dev/null || exit 1
     environment:
       SCHEMA_REGISTRY_HOST_NAME: schema-registry
       SCHEMA_REGISTRY_KAFKASTORE_BOOTSTRAP_SERVERS: kafka1:9092
@@ -66,7 +71,8 @@ services:
     hostname: shadowtraffic
     platform: linux/amd64
     depends_on:
-      - schema-registry
+      schema-registry:
+        condition: service_healthy
     volumes:
       - type: bind
         source: "./shadowtraffic"
@@ -76,98 +82,14 @@ services:
     command: --config /etc/shadowtraffic/datagen.json --seed 1234
     restart: on-failure
 
-  db:
-    container_name: db
-    hostname: db
-    image: mysql
-    ports:
-      - 3306:3306
-    healthcheck:
-      test: mysqladmin ping -h 127.0.0.1 -u $$MYSQL_USER --password=$$MYSQL_PASSWORD
-      start_period: 5s
-      interval: 5s
-      timeout: 5s
-      retries: 55
-    environment:
-      - MYSQL_DATABASE=streambased
-      - MYSQL_ROOT_PASSWORD=streambased
-    command:
-      [
-        "--character-set-server=utf8mb4",
-        "--collation-server=utf8mb4_unicode_ci",
-      ]
-
-  connect:
-    image: confluentinc/cp-kafka-connect:7.5.0
-    container_name: connect
-    restart: always
-    depends_on:
-      - schema-registry
-    healthcheck:
-      test: curl localhost:8083
-      start_period: 5s
-      interval: 5s
-      timeout: 5s
-      retries: 55
-    volumes:
-      - ./plugins:/usr/share/plugins
-      - ./pipeline:/tmp/pipeline:rw
-    ports:
-      - 8083:8083
-    environment:
-
-      CONNECT_BOOTSTRAP_SERVERS: kafka1:9092
-      CONNECT_LISTENERS: http://0.0.0.0:8083
-      CONNECT_GROUP_ID: "connect"
-      CONNECT_PRODUCER_CLIENT_ID: "connect-worker-producer"
-      CONNECT_PRODUCER_ENABLE_IDEMPOTENCE: 'true'
-
-      CONNECT_CONFIG_STORAGE_TOPIC: connect-configs
-      CONNECT_OFFSET_STORAGE_TOPIC: connect-offsets
-      CONNECT_STATUS_STORAGE_TOPIC: connect-statuses
-
-      CONNECT_REPLICATION_FACTOR: 1
-      CONNECT_CONFIG_STORAGE_REPLICATION_FACTOR: 1
-      CONNECT_OFFSET_STORAGE_REPLICATION_FACTOR: 1
-      CONNECT_STATUS_STORAGE_REPLICATION_FACTOR: 1
-
-      CONNECT_KEY_CONVERTER: "org.apache.kafka.connect.storage.StringConverter"
-      CONNECT_VALUE_CONVERTER: "io.confluent.connect.avro.AvroConverter"
-      CONNECT_VALUE_CONVERTER_SCHEMA_REGISTRY_URL: "http://schema-registry:8081"
-
-      CONNECT_REST_ADVERTISED_HOST_NAME: connect
-      CONNECT_PLUGIN_PATH: "/usr/share/java,/usr/share/plugins"
-
-      CLASSPATH: "/usr/share/plugins/mysql-connector-j-9.3.0.jar"
-
-      # Reduce Connect memory utilization
-      KAFKA_JVM_PERFORMANCE_OPTS: -server -XX:+UseG1GC -XX:GCTimeRatio=1
-        -XX:MinHeapFreeRatio=10 -XX:MaxHeapFreeRatio=20
-        -XX:MaxGCPauseMillis=10000 -XX:InitiatingHeapOccupancyPercent=35 -XX:+ExplicitGCInvokesConcurrent
-        -XX:MaxInlineLevel=15 -Djava.awt.headless=true
-
-  pipeline:
-    image: mysql
-    container_name: pipeline
-    restart: always
-    depends_on:
-      connect:
-        condition: service_healthy
-      db:
-        condition: service_healthy
-    command: 'sh -c /tmp/external.sh'
-    volumes:
-      - ./pipeline:/tmp/pipeline:rw
-      - ./scripts/external.sh:/tmp/external.sh
-      - ./scripts/connector.json:/tmp/connector.json
-
   superset:
     build:
       context: ./superset
       dockerfile: Dockerfile
     container_name: superset
     depends_on:
-      - schema-registry
+      schema-registry:
+        condition: service_healthy
     platform: linux/amd64
     environment:
       - ADMIN_USERNAME=admin
@@ -180,7 +102,8 @@ services:
     image: tchiotludo/akhq:latest
     container_name: akhq
     depends_on:
-      - schema-registry
+      schema-registry:
+        condition: service_healthy
     platform: linux/amd64
     environment:
       AKHQ_CONFIGURATION: |
@@ -197,15 +120,54 @@ services:
     ports:
       - '9090:8080'
 
-  dbt:
-    build:
-      context: dbt
-      dockerfile: Dockerfile
-    container_name: dbt
-    platform: linux/amd64
-    command: sleep infinity
+  spark-iceberg:
+    image: tabulario/spark-iceberg
+    hostname: spark
+    container_name: spark-iceberg
     volumes:
-      - type: bind
-        source: "./dbtConfig"
-        target: /etc/dbtConfig
-        read_only: true
+      - ./spark/warehouse:/home/iceberg/warehouse
+      - ./spark/notebooks:/home/iceberg/notebooks/notebooks
+      - ./spark/spark-defaults.conf:/opt/spark/conf/spark-defaults.conf
+    environment:
+      - AWS_ACCESS_KEY_ID=dummyapi
+      - AWS_SECRET_ACCESS_KEY=dummysecret
+      - AWS_REGION=us-east-1
+    ports:
+      - 8888:8888
+      - 10000:10000
+      - 10001:10001
+      - 4040-4050:4040-4050
+
+  directstream:
+    image: streambased/directstream:demo
+    hostname: directstream
+    container_name: directstream
+    platform: linux/amd64
+    depends_on:
+      - shadowtraffic
+    restart: on-failure
+    volumes:
+      - "./directstream/etc/directstream-config.json:/app/etc/directstream-config.json"
+      - "./directstream/etc/indexer.properties:/app/etc/indexer.properties"
+      - "./directstream/etc/logback.xml:/app/etc/logback.xml"
+    ports:
+      - 11000:11000
+      - 11001:11001
+
+  s3manager:
+    image: cloudlena/s3manager
+    hostname: s3manager
+    container_name: s3manager
+    platform: linux/amd64
+    depends_on:
+      - directstream
+    restart: on-failure
+    ports:
+      - 9180:9180
+    environment:
+      - ACCESS_KEY_ID=dummyapi
+      - SECRET_ACCESS_KEY=dummysecret
+      - REGION=us-east-1
+      - USE_SSL=false
+      - PORT=9180
+      - ENDPOINT=directstream:11000
