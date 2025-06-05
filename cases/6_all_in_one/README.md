@@ -9,8 +9,7 @@ This demo will showcase:
 2. Accessing Kafka data as if it was an Iceberg Table
 3. Accessing Kafka data as if it was ANSI SQL compatible database.
 
-All of the above access patterns will utilise Streambased indexing to accelerate performance and all will only use 
-Kafka as a data source (no ETL is involved in any of these demos)
+All of the above access patterns will utilise Streambased indexing to accelerate performance and all will use only Kafka as a data source (no ETL is involved in any of these demos)
 
 ## Environment
 
