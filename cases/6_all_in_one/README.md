@@ -21,7 +21,7 @@ Core Kafka services:
 * kafka1, zookeeper and schema-registry - The Kafka environment
 * shadowtraffic - A data generator
 
-In addition to this following Streambased tools are deployed:
+Streambased tools:
 
 * streambased-server - A Streambased SQL engine instance
 * directstream - A Streambased -> Iceberg projection instance
