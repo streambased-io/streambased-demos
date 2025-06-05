@@ -13,11 +13,10 @@ All of the above access patterns will utilise Streambased indexing to accelerate
 
 ## Environment
 
-This demo simulates a typical operational environment in Kafka, we are simulating a shopify style 
-retail company where users host shops for their goods on our platform. The architecture looks 
-like this:
+This demo simulates an operational environment in Kafka, we are simulating a shopify style 
+retail company where users host shops for their goods on our platform. The demo is deployed as a single docker-compose environment comprising of:
 
-All of this is exists in a single docker-compose environment containing the following core Kafka services:
+Core Kafka services:
 
 * kafka1, zookeeper and schema-registry - The Kafka environment
 * shadowtraffic - A data generator
