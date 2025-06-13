@@ -1,0 +1,382 @@
+{
+  "generators": [
+    {
+      "topic": "customers",
+      "key": "1/5 bad account customers",
+      "value": {
+        "id": {
+          "_gen": "string",
+          "expr": "CU-0150"
+        },
+        "name": {
+          "_gen": "string",
+          "expr": "#{Name.fullName}"
+        },
+        "accountType": {
+          "_gen": "oneOf",
+          "choices": [
+            "premium",
+            "basic"
+          ]
+        }
+      },
+      "localConfigs": {
+        "events": {
+          "exactly": 1
+        }
+      }
+    },
+    {
+      "topic": "customers",
+      "key": "2/5 bad account customers",
+      "value": {
+        "id": {
+          "_gen": "string",
+          "expr": "CU-0164"
+        },
+        "name": {
+          "_gen": "string",
+          "expr": "#{Name.fullName}"
+        },
+        "accountType": {
+          "_gen": "oneOf",
+          "choices": [
+            "premium",
+            "basic"
+          ]
+        }
+      },
+      "localConfigs": {
+        "events": {
+          "exactly": 1
+        }
+      }
+    },
+    {
+      "topic": "customers",
+      "key": "3/5 bad account customers",
+      "value": {
+        "id": {
+          "_gen": "string",
+          "expr": "CU-0845"
+        },
+        "name": {
+          "_gen": "string",
+          "expr": "#{Name.fullName}"
+        },
+        "accountType": {
+          "_gen": "oneOf",
+          "choices": [
+            "premium",
+            "basic"
+          ]
+        }
+      },
+      "localConfigs": {
+        "events": {
+          "exactly": 1
+        }
+      }
+    },
+    {
+      "topic": "customers",
+      "key": "4/5 bad account customers",
+      "value": {
+        "id": {
+          "_gen": "string",
+          "expr": "CU-0009"
+        },
+        "name": {
+          "_gen": "string",
+          "expr": "#{Name.fullName}"
+        },
+        "accountType": {
+          "_gen": "oneOf",
+          "choices": [
+            "premium",
+            "basic"
+          ]
+        }
+      },
+      "localConfigs": {
+        "events": {
+          "exactly": 1
+        }
+      }
+    },
+    {
+      "topic": "customers",
+      "key": "5/5 bad account customers",
+      "value": {
+        "id": {
+          "_gen": "string",
+          "expr": "CU-0983"
+        },
+        "name": {
+          "_gen": "string",
+          "expr": "#{Name.fullName}"
+        },
+        "accountType": {
+          "_gen": "oneOf",
+          "choices": [
+            "premium",
+            "basic"
+          ]
+        }
+      },
+      "localConfigs": {
+        "events": {
+          "exactly": 1
+        }
+      }
+    },
+    {
+      "topic": "customers",
+      "key": "good account customers",
+      "value": {
+        "id": {
+          "_gen": "string",
+          "expr": "CU-#{Number.numberBetween '1000','2000'}"
+        },
+        "name": {
+          "_gen": "string",
+          "expr": "#{Name.fullName}"
+        },
+        "accountType": {
+          "_gen": "oneOf",
+          "choices": [
+            "premium",
+            "basic"
+          ]
+        }
+      },
+      "localConfigs": {
+        "events": {
+          "exactly": 2000
+        }
+      }
+    },
+
+    {
+      "topic": "transactions",
+      "key": "1000 good account transactions",
+      "value": {
+        "customerId": {
+          "_gen": "string",
+          "expr": "CU-#{Number.numberBetween '1000','2000'}"
+        },
+        "amount": {
+          "_gen": "uniformDistribution",
+          "bounds": [
+            10,
+            20
+          ]
+        },
+        "transactionCategory": {
+          "_gen": "string",
+          "expr": "#{Commerce.department}"
+        },
+        "timestamp": {
+          "_gen": "now"
+        }
+      },
+      "localConfigs": {
+        "events": {
+          "exactly": 1000
+        }
+      }
+    },
+    {
+      "topic": "transactions",
+      "key": "1 good account transaction per second",
+      "value": {
+        "customerId": {
+          "_gen": "string",
+          "expr": "CU-#{Number.numberBetween '1000','2000'}"
+        },
+        "amount": {
+          "_gen": "uniformDistribution",
+          "bounds": [
+            10,
+            20
+          ]
+        },
+        "transactionCategory": {
+          "_gen": "string",
+          "expr": "#{Commerce.department}"
+        },
+        "timestamp": {
+          "_gen": "now"
+        }
+      },
+      "localConfigs": {
+        "throughput": 1,
+        "events": {
+          "exactly": 1000
+        }
+      }
+    },
+    {
+      "topic": "transactions",
+      "key": "10 bad account transactions",
+      "value": {
+        "customerId": {
+          "_gen": "oneOf",
+          "choices": [
+            "CU-0150",
+            "CU-0164",
+            "CU-0845",
+            "CU-0009",
+            "CU-0983"
+          ]
+        },
+        "amount": {
+          "_gen": "uniformDistribution",
+          "bounds": [
+            1000,
+            20000
+          ]
+        },
+        "transactionCategory": {
+          "_gen": "string",
+          "expr": "#{Commerce.department}"
+        },
+        "timestamp": {
+          "_gen": "now"
+        }
+      },
+      "localConfigs": {
+        "events": {
+          "exactly": 10
+        }
+      }
+    },
+    {
+      "topic": "transactions",
+      "key": "1 bad account transaction every 10 seconds",
+      "value": {
+        "customerId": {
+          "_gen": "oneOf",
+          "choices": [
+            "CU-0150",
+            "CU-0164",
+            "CU-0845"
+          ]
+        },
+        "amount": {
+          "_gen": "uniformDistribution",
+          "bounds": [
+            1000,
+            20000
+          ]
+        },
+        "transactionCategory": {
+          "_gen": "string",
+          "expr": "#{Commerce.department}"
+        },
+        "timestamp": {
+          "_gen": "now"
+        }
+      },
+      "localConfigs": {
+        "throttleMs": 10000,
+        "events": {
+          "exactly": 100
+        }
+      }
+    },
+    {
+      "topic": "transactions",
+      "key": "1 bad account wierd transaction",
+      "value": {
+        "customerId": "CU-0009",
+        "amount": {
+          "_gen": "uniformDistribution",
+          "bounds": [
+            1,
+            2
+          ]
+        },
+        "transactionCategory": {
+          "_gen": "string",
+          "expr": "#{Commerce.department}"
+        },
+        "timestamp": {
+          "_gen": "now"
+        }
+      },
+      "localConfigs": {
+        "delay": {
+          "rate": 1,
+          "ms": 30000
+        },
+        "events": {
+          "exactly": 1000
+        }
+      }
+    },
+
+    {
+      "topic": "logins",
+      "key": "1000 initial logins",
+      "value": {
+        "customerId": {
+          "_gen": "string",
+          "expr": "CU-#{Number.numberBetween '1000','2000'}"
+        },
+        "ip": {
+           "_gen": "string",
+           "expr": "#{Internet.ipV4Address}"
+        },
+        "timestamp": {
+          "_gen": "now"
+        }
+      },
+      "localConfigs": {
+        "events": {
+          "exactly": 1000
+        }
+      }
+    },
+    {
+      "topic": "logins",
+      "key": "bad account logins initial logins",
+      "value": {
+        "customerId": {
+          "_gen": "oneOf",
+          "choices": [
+            "CU-0150",
+            "CU-0164",
+            "CU-0845",
+            "CU-0009",
+            "CU-0983"
+          ]
+        },
+        "ip": {
+          "_gen": "string",
+          "expr": "102.89.32.5"
+        },
+        "timestamp": {
+          "_gen": "now"
+        }
+      },
+      "localConfigs": {
+        "throughput": 1,
+        "events": {
+          "exactly": 1000
+        }
+      }
+    }
+  ],
+  "connections": {
+    "kafka": {
+      "kind": "kafka",
+      "producerConfigs": {
+        "bootstrap.servers": "kafka1:9092",
+        "key.serializer": "io.shadowtraffic.kafka.serdes.JsonSerializer",
+        "value.serializer": "io.confluent.kafka.serializers.KafkaAvroSerializer",
+        "schema.registry.url": "http://schema-registry:8081"
+      }
+    }
+  }
+}
