@@ -1,6 +1,7 @@
 #! /bin/bash
 
 for attempt in {1..100}; do
+  echo `date`" CREATING DATABASES... ATTEMPT: $attempt" >> /tmp/add_database.log
   # grab an api token
   export TOKEN=`curl -X POST -H "Content-Type: application/json" localhost:8088/api/v1/security/login -d '{
     "password": "admin",
@@ -8,6 +9,7 @@ for attempt in {1..100}; do
     "refresh": true,
     "username": "admin"
   }' | awk -F':' '{print $2}' | awk -F',' '{print $1}' | sed -e 's/"//g'`
+  echo `date`" GOT TOKEN: $TOKEN" >> /tmp/add_database.log
   # check the token is set
   if [[ $TOKEN == ey* ]]; then
     # make the streambased call
@@ -33,10 +35,9 @@ for attempt in {1..100}; do
       "parameters": {},
       "server_cert": "",
       "sqlalchemy_uri": "trino://streambased-server:8080/kafka",
-      "ssh_tunnel": {
-      },
+      "ssh_tunnel": {},
       "uuid": "ee65473b-7501-4846-bc40-f09883b64911"
-    }'
+    }' >> /tmp/add_database.log
     # make the mysql call
     curl -H "Content-Type: application/json" -H "Authorization: Bearer $TOKEN" -X POST localhost:8088/api/v1/database/ -d'
     {
@@ -69,12 +70,8 @@ for attempt in {1..100}; do
       "ssh_tunnel": {
       },
       "uuid": "05312bc4-b408-4cfb-9aa3-656fef08c1f8"
-    }'
-    exit 0
-  fi
-  sleep 5
-done
-
+    }' >> /tmp/add_database.log
+    echo `date`"DATABASES CREATED... EXITING" >> /tmp/add_database.log
     exit 0
   fi
   sleep 5

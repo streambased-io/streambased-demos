@@ -1,8 +1,8 @@
-FROM apache/superset:latest
+FROM apache/superset:4.1.2
 
 USER root
 
-RUN apt update && apt install -y pkg-config gcc python3-dev
+RUN apt update && apt install -y pkg-config gcc python3-dev default-libmysqlclient-dev build-essential
 RUN pip install trino mysqlclient
 
 ENV ADMIN_USERNAME $ADMIN_USERNAME
