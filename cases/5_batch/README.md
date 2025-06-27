@@ -39,6 +39,12 @@ To start the environment run:
 
 ### Step 2: Setup dbt
 
+start by entering our environment directory: 
+
+```bash
+cd environment
+```
+
 We create a new DBT project in our dbt container:
 
 ```bash
