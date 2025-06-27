@@ -41,3 +41,5 @@ This repository holds the following cases:
    both online and offline workloads.
 5. Making Kafka do Batch - I have an external customer who's specced a daily batch fetch job for my data. The data is in Kafka,
    how do I give to them?
+6. Introducing Iceberg - This all in one demos shows the entire Streambased product suite including Kafka as a 
+   filesystem, Kafka as Iceberg and Kafka directly to BI tools.
