@@ -76,6 +76,10 @@ You will see the client orchestrate fetching of the results and creation of char
 
 ![chart](media/chart.png "Chart")
 
+> 📝 Streambased MCP cleitn uses the MCP server: https://github.com/antvis/mcp-server-chart to generate the charts 
+> and will send data to a publicly accessible endpoint. We recommend against using this with capability with sensitive 
+> data.
+
 ### Shutting down
 
 To stop the environment run:
