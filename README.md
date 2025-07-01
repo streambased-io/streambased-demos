@@ -22,24 +22,25 @@ Then follow the steps from the README in the `/cases/[case name]` directory
 
 This repository holds the following cases:
 
-1. Slow Data - What is the e2e latency of your data? By this we mean after a datapoint is created, how long does it
+1. [Slow Data](tree/main/cases/1_slow_data) - What is the e2e latency of your data? By this we mean after a datapoint is created, how long does it
    take for it to be available for analytics? Hours? Days? Weeks? If it's larger than zero you need
    Streambased.
-2. Real-time FOMO - Are your competitors benefiting from datasets you can't see? Real-time data powers the world but
+2. [Real-time FOMO](tree/main/cases/2_fomo) - Are your competitors benefiting from datasets you can't see? Real-time data powers the world but
    only a fraction of it is available for analytics. If you want the full, current view of the data
    inside your business you need Streambased.
-3. Kafka is a Black Box - Kafka is opaque! Messages go in and messages come out but what happens in the middle is largely
+3. [Kafka is a Black Box](tree/main/cases/3_black_box) - Kafka is opaque! Messages go in and messages come out but what happens in the middle is largely
    invisible. How do you find that poison pill? How do you know which is the bad actor client? How do
    you assemble usage reports for billing? Streambased opens the box and shines a light on your Kafka
    data.
-4. Two Generals - The two generals problem https://en.wikipedia.org/wiki/Two_Generals%27_Problem is a popular CS
+4. [Two Generals](tree/main/cases/4_two_generals) - The two generals problem https://en.wikipedia.org/wiki/Two_Generals%27_Problem is a popular CS
    exercise where two actors must make a decision (whether to attack) based on potentially different
    information sets. This exercise is played out daily in your data estate with the operational
    general (in charge of online apps) and the analytical general (in charge of offline) working on
    different views of the world. As the emperor, which of these you do you trust when they advise
    different things? With Streambased there is only one source of truth and a consistent view for
    both online and offline workloads.
-5. Making Kafka do Batch - I have an external customer who's specced a daily batch fetch job for my data. The data is in Kafka,
+5. [Making Kafka do Batch](tree/main/cases/5_batch) - I have an external customer who's specced a daily batch fetch job for my data. The data is in Kafka,
    how do I give to them?
-6. Introducing Iceberg - This all in one demos shows the entire Streambased product suite including Kafka as a 
+6. [Introducing Iceberg](tree/main/cases/6_all_in_one) - This all-in-one demo shows the entire Streambased product suite including Kafka as a 
    filesystem, Kafka as Iceberg and Kafka directly to BI tools.
+7. [Streambased MCP](tree/main/cases/7_mcp) - Explore "Vibe coding for data" with Streambased MCP server and client.

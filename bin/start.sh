@@ -20,7 +20,11 @@ then
     rm -rf $SCRIPT_DIR/../environment/scripts
 fi
 mkdir -p $SCRIPT_DIR/../environment/scripts
-rm -rf $SCRIPT_DIR/../environment/pipeline/*
+if [ -d "$SCRIPT_DIR/../environment/mcp" ]
+then
+    rm -rf $SCRIPT_DIR/../environment/mcp
+fi
+mkdir -p $SCRIPT_DIR/../environment/mcp
 if [ -d "$SCRIPT_DIR/../environment/pipeline" ]
 then
     rm -rf $SCRIPT_DIR/../environment/pipeline
@@ -37,6 +41,11 @@ if [ -f "$SCRIPT_DIR/../cases/$DEMO_DIR/connector.json" ] || [ -f "$SCRIPT_DIR/.
 then
   cat $SCRIPT_DIR/../environment/docker-compose.multi-system.part.yaml >> $SCRIPT_DIR/../environment/docker-compose.yaml
 fi
+if [ -f "$SCRIPT_DIR/../cases/$DEMO_DIR/mcp.env" ]
+then
+  cat $SCRIPT_DIR/../environment/docker-compose.mcp.part.yaml >> $SCRIPT_DIR/../environment/docker-compose.yaml
+fi
+
 
 # copy in config files
 cp $SCRIPT_DIR/../cases/$DEMO_DIR/client.properties $SCRIPT_DIR/../environment/streambased
@@ -48,6 +57,13 @@ fi
 if [ -f "$SCRIPT_DIR/../cases/$DEMO_DIR/external.sh" ]
 then
   cp $SCRIPT_DIR/../cases/$DEMO_DIR/external.sh $SCRIPT_DIR/../environment/scripts/external.sh
+fi
+if [ -f "$SCRIPT_DIR/../cases/$DEMO_DIR/mcp_internal.env" ]
+then
+  cp $SCRIPT_DIR/../cases/$DEMO_DIR/mcp_internal.env $SCRIPT_DIR/../environment/mcp/mcp.env
+elif [ -f "$SCRIPT_DIR/../cases/$DEMO_DIR/mcp.env" ]
+then
+  cp $SCRIPT_DIR/../cases/$DEMO_DIR/mcp.env $SCRIPT_DIR/../environment/mcp/mcp.env
 fi
 
 # start services

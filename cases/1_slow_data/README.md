@@ -98,4 +98,12 @@ cd environment
 docker-compose stop db connect pipeline
 ```
 
-Back in Superset the `Warehouse` query will no longer work but the `Streambased` one will. 
+Back in Superset the `Warehouse` query will no longer work but the `Streambased` one will.
+
+### Shutting down
+
+To stop the environment run:
+
+```bash
+./bin/stop.sh
+```

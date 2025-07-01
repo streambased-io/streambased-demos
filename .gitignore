@@ -11,4 +11,7 @@ environment/shadowtraffic**
 environment/streambased**
 environment/pipeline/**
 environment/scripts/**
+environment/mcp/**
 environment/docker-compose.yaml
+
+cases/7_mcp/mcp_internal.env
