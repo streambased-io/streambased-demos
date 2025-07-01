@@ -43,3 +43,4 @@ This repository holds the following cases:
    how do I give to them?
 6. Introducing Iceberg - This all in one demos shows the entire Streambased product suite including Kafka as a 
    filesystem, Kafka as Iceberg and Kafka directly to BI tools.
+7. Streambased MCP - Explore "Vibe coding for data" with Streambased MCP server and client.
