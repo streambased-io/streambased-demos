@@ -113,3 +113,11 @@ SELECT paymentTermCode, sum(amount) FROM transactions GROUP BY paymentTermCode;
 
 That confirms it, this is clearly an anomaly as only `ZWD` shows a zero total. We can now take immediate action, most 
 likely suspending sales in ZWD.
+
+### Shutting down
+
+To stop the environment run:
+
+```bash
+./bin/stop.sh
+```

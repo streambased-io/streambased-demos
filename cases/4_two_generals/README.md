@@ -91,3 +91,10 @@ After a little while the two source start to drift. Repeat the queries from step
 
 Which source is correct, which do you trust?
 
+### Shutting down
+
+To stop the environment run:
+
+```bash
+./bin/stop.sh
+```

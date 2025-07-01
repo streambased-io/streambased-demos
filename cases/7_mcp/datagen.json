@@ -1,0 +1,91 @@
+{
+  "generators": [
+    {
+      "topic": "cc_raw_pmts",
+      "value": {
+        "currency": {
+          "_gen": "string",
+          "expr": "#{Country.currencyCode}"
+        },
+        "state": {
+          "_gen": "oneOf",
+          "choices": [
+            "California",
+            "Ohio",
+            "Texas",
+            "Arizona",
+            "Utah"
+          ]
+        },
+        "amount" : {
+          "_gen": "uniformDistribution",
+          "bounds": [
+            10,
+            100
+          ]
+        },
+        "paymentTermCode" : {
+          "_gen": "string",
+          "expr": "#{Country.countryCode3}"
+        },
+        "paymentTime" : {
+          "_gen": "sequentialInteger",
+          "startingFrom": 1718011807
+        }
+      },
+      "localConfigs": {
+        "events": {
+          "exactly": 1000
+        },
+        "avroSchemaHint": {
+          "value": {
+            "type": "record",
+            "name": "cc_raw_pmts_value",
+            "doc": "A topic to hold credit card payments",
+            "fields": [
+              {
+                "name": "currency",
+                "type": "string",
+                "doc": "The currency of a credit card payment"
+              },
+              {
+                "name": "state",
+                "type": "string",
+                "doc": "The full name of the US state a credit card payment was made in"
+              },
+              {
+                "name": "amount",
+                "type": "double",
+                "doc": "The amount of money paid in a credit card payment in USD"
+              },
+              {
+                "name": "paymentTermCode",
+                "type": "string",
+                "doc": "A foreign key that is used to look up further payment details appropriate to the currency bu the payment_terms topic"
+              },
+              {
+                "name": "paymentTime",
+                "type": {
+                  "type": "long",
+                  "logicalType": "timestamp-micros"
+                },
+                "doc": "The time the payment was made"
+              }
+            ]
+          }
+        }
+      }
+    }
+  ],
+  "connections": {
+    "kafka": {
+      "kind": "kafka",
+      "producerConfigs": {
+        "bootstrap.servers": "kafka1:9092",
+        "key.serializer": "io.shadowtraffic.kafka.serdes.JsonSerializer",
+        "value.serializer": "io.confluent.kafka.serializers.KafkaAvroSerializer",
+        "schema.registry.url": "http://schema-registry:8081"
+      }
+    }
+  }
+}

@@ -1,0 +1,14 @@
+  streambased-mcp:
+    hostname: streambased-mcp
+    image: "streambased/mcp:latest"
+    ports:
+      - "1122:1122"
+    command: [ "--transport", "sse" ]
+    env_file: "mcp/mcp.env"
+
+  streambased-mcp-client:
+    hostname: streambased-mcp-client
+    image: "streambased/mcp-client:latest"
+    ports:
+      - "3000:3000"
+    env_file: "mcp/mcp.env"

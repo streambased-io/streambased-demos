@@ -100,3 +100,11 @@ Now let's ask DBT to simulate a run and show us what the output would be:
 ```bash
 docker-compose exec --workdir /streambased_dbt dbt dbt show --select models/src_purchases.sql
 ```
+
+### Shutting down
+
+To stop the environment run:
+
+```bash
+./bin/stop.sh
+```

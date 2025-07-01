@@ -55,7 +55,7 @@ services:
       SCHEMA_REGISTRY_SCHEMA_REGISTRY_GROUP_ID: schema-registry
 
   streambased-server:
-    image: streambased/streambased-enterprise:latest
+    image: local/streambased-enterprise:latest
     hostname: streambased-server
     platform: linux/amd64
     ports:
@@ -171,3 +171,4 @@ services:
       - USE_SSL=false
       - PORT=9180
       - ENDPOINT=directstream:11000
+

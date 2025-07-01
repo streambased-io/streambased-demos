@@ -111,3 +111,11 @@ Using the extra information made available from Streambased we can answer our qu
 the devices used by our biggest spending customers. The data is available easily and immediately. 
 Taking the traditional approach and landing the data into the lake would have required much more 
 effort than this demo shows.
+
+### Shutting down
+
+To stop the environment run:
+
+```bash
+./bin/stop.sh
+```

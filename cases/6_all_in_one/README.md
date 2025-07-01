@@ -223,4 +223,10 @@ Together, these capabilities demonstrate how Streambased brings modern, self-ser
 making Kafka accessible to data engineers, analysts, and BI users alike. Most importantly, no ETL processes were 
 involved in any of the above, everything interacts with live Kafka data in real time.
 
+### Shutting down
 
+To stop the environment run:
+
+```bash
+./bin/stop.sh
+```
