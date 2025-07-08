@@ -172,3 +172,12 @@ services:
       - PORT=9180
       - ENDPOINT=directstream:11000
 
+  jupyter:
+    build:
+      context: ./jupyter
+      dockerfile: Dockerfile
+    container_name: jupyter
+    platform: linux/amd64
+    command: sleep infinity
+    ports:
+      - '8889:8889'
