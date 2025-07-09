@@ -3,22 +3,10 @@
 This repository holds public demos of Streambased technology. This repo simulates business and architectural problems 
 common with modern data infrastrcture and demonstrates how Streambased technology can be applied to them.
 
-## The Cases
+## Demo Cases
 
 Each business/architectural case is documented in it's own directory in `/cases/`. Each directory has a README that 
 will explain the case further.
-
-## Executing a case
-
-To execute a demo run:
-
-```bash
-./bin/start.sh [case directory name e.g. 1_slow_data ]
-```
-
-Then follow the steps from the README in the `/cases/[case name]` directory
-
-## Demo Cases
 
 This repository holds the following cases:
 
@@ -44,3 +32,13 @@ This repository holds the following cases:
 6. [Introducing Iceberg](tree/main/cases/6_all_in_one) - This all-in-one demo shows the entire Streambased product suite including Kafka as a 
    filesystem, Kafka as Iceberg and Kafka directly to BI tools.
 7. [Streambased MCP](tree/main/cases/7_mcp) - Explore "Vibe coding for data" with Streambased MCP server and client.
+
+## Executing a case
+
+To execute a demo run:
+
+```bash
+./bin/start.sh [case directory name e.g. 1_slow_data ]
+```
+
+Then follow the steps from the README in the `/cases/[case name]` directory
