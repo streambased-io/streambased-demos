@@ -30,6 +30,7 @@ then
     rm -rf $SCRIPT_DIR/../environment/pipeline
 fi
 mkdir -p $SCRIPT_DIR/../environment/pipeline
+chmod o+rw $SCRIPT_DIR/../environment/pipeline
 
 
 # fetch shadowtraffic license
