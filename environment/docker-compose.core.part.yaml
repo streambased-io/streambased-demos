@@ -150,6 +150,7 @@ services:
       - "./directstream/etc/directstream-config.json:/app/etc/directstream-config.json"
       - "./directstream/etc/indexer.properties:/app/etc/indexer.properties"
       - "./directstream/etc/logback.xml:/app/etc/logback.xml"
+      - "./ssl/kafka.directstream.keystore.jks:/etc/ssl/keystore.jks"
     ports:
       - 11000:11000
       - 11001:11001
@@ -179,5 +180,9 @@ services:
     container_name: jupyter
     platform: linux/amd64
     command: sleep infinity
+    volumes:
+      - "./notebooks/duckdb.ipynb:/notebooks/duckdb.ipynb"
+      - "./ssl/kafka.directstream.truststore.jks:/etc/ssl/truststore.jks"
+      - "./ssl/directstream.certificate.pem:/etc/ssl/directstream.certificate.pem"
     ports:
       - '8889:8889'

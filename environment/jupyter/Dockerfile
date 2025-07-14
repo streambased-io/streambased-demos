@@ -1,6 +1,6 @@
 FROM ubuntu:jammy
 
-RUN apt-get update && apt-get install -y --no-install-recommends python3-pip build-essential python3-dev
+RUN apt-get update && apt-get install -y --no-install-recommends python3-pip build-essential python3-dev curl
 RUN pip install jupyterlab
 RUN pip install jupysql
 RUN pip install duckdb

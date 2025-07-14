@@ -1,0 +1,9 @@
+Generating 3,072 bit RSA key pair and self-signed certificate (SHA384withRSA) with a validity of 90 days
+	for: CN=directstream, OU=TEST, O=CONFLUENT, L=PaloAlto, ST=Ca, C=US
+Certificate request self-signature ok
+subject=C = US, ST = Ca, L = PaloAlto, O = CONFLUENT, OU = TEST, CN = directstream
+Certificate was added to keystore
+Certificate reply was installed in keystore
+Certificate was added to keystore
+Certificate stored in file <directstream.der>
+Importing keystore kafka.directstream.keystore.jks to directstream.keystore.p12...
