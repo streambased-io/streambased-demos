@@ -71,4 +71,5 @@ fi
 cd $SCRIPT_DIR/../environment
 docker-compose stop
 docker-compose rm
+#docker-compose pull
 docker-compose up -d --build

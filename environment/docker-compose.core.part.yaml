@@ -69,7 +69,6 @@ services:
   shadowtraffic:
     image: shadowtraffic/shadowtraffic:latest
     hostname: shadowtraffic
-    platform: linux/amd64
     depends_on:
       schema-registry:
         condition: service_healthy

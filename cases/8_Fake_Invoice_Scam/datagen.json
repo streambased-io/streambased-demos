@@ -1,0 +1,332 @@
+{
+  "generators": [
+    {
+      "topic": "Suppliers",
+      "vars": {
+        "CompanyName": {
+          "_gen": "string",
+          "expr": "#{Company.name}"
+        }
+      },
+      "value": {
+        "SupplierID": {
+          "_gen": "sequentialInteger"
+        },
+        "SupplierName": {
+          "_gen": "var",
+          "var": "CompanyName"
+        },
+        "SupplierEmail": {
+          "_gen": "string",
+          "expr": "enquiries@#{CompanyName}.com",
+          "removeSubstring": " "
+        }
+      },
+      "localConfigs": {
+        "events": {
+          "exactly": 43
+        }
+      }
+    },
+    {
+      "topic": "Employees",
+      "value": {
+        "EmployeeID": {
+          "_gen": "sequentialInteger"
+        },
+        "EmployeeName": {
+          "_gen": "string",
+          "expr": "#{Name.fullName}"
+        },
+        "EmployeeSalary": {
+          "_gen": "uniformDistribution",
+          "bounds": [
+            20000,
+            80000
+          ],
+          "decimals": 2
+        }
+      },
+      "localConfigs": {
+        "events": {
+          "exactly": 73
+        }
+      }
+    },
+    {
+      "topic": "Invoices",
+      "value": {
+        "InvoiceID": {
+          "_gen": "sequentialInteger"
+        },
+        "SupplierID": {
+          "_gen": "lookup",
+          "topic": "Suppliers",
+          "path": [
+            "value",
+            "SupplierID"
+          ]
+        },
+        "EmployeeApprovedID": {
+          "_gen": "lookup",
+          "topic": "Employees",
+          "path": [
+            "value",
+            "EmployeeID"
+          ]
+        },
+        "BalanceDue": {
+          "_gen": "uniformDistribution",
+          "bounds": [
+            50,
+            200
+          ],
+          "decimals": 2
+        },
+        "Currency": {
+          "_gen": "weightedOneOf",
+          "choices": [
+            {
+              "value": "$",
+              "weight": 17
+            },
+            {
+              "value": "£",
+              "weight": 1
+            },
+            {
+              "value": "€",
+              "weight": 2
+            }
+          ]
+        },
+        "DueDate": {
+          "_gen": "formatDateTime",
+          "ms": {
+            "_gen": "math",
+            "expr": "timestamp - offset",
+            "names": {
+              "timestamp": {
+                "_gen": "now"
+              },
+              "offset": {
+                "_gen": "uniformDistribution",
+                "bounds": [
+                  -604800000,
+                  15778476000
+                ],
+                "decimals": 0
+              }
+            }
+          },
+          "format": "yyyy-MM-dd"
+        }
+      ,
+        "SortCode": {
+          "_gen": "uniformDistribution",
+          "bounds": [
+            100000,
+            1000000
+          ],
+          "decimals": 0
+        },
+        "AccountNumber": {
+          "_gen": "uniformDistribution",
+          "bounds": [
+            10000000,
+            100000000
+          ],
+          "decimals": 0
+        },
+        "PaymentTime": {
+          "_gen": "formatDateTime",
+          "ms": {
+            "_gen": "math",
+            "expr": "timestamp - offset",
+            "names": {
+              "timestamp": {
+                "_gen": "now"
+              },
+              "offset": {
+                "_gen": "uniformDistribution",
+                "bounds": [
+                  846000000,
+                  15778476000
+                ],
+                "decimals": 0
+              }
+            }
+          },
+          "format": "yyyy-MM-dd HH:mm:ss.SSS"
+        },
+        "ItemExpected": {
+          "_gen": "string",
+          "expr": "#{Commerce.productName}"
+        },
+        "QuantityExpected": {
+          "_gen": "uniformDistribution",
+          "bounds": [
+            1,
+            500
+          ],
+          "decimals": 0
+        }
+      },
+      "localConfigs": {
+        "repeat": {
+          "rate": 0.015,
+          "times": 1
+        },
+        "events":{
+          "exactly": 731
+        },
+        "avroSchemaHint": {
+          "value": {
+            "type": "record",
+            "name": "Invoices",
+            "fields": [
+              {
+                "name": "InvoiceID",
+                "type": "long",
+                "doc": "A unique ID that identifies an invoice. Not NULL"
+              },
+              {
+                "name": "SupplierID",
+                "type": "long",
+                "doc": "A foreign key that links an invoice to a supplier. Not NULL"
+              },
+              {
+                "name": "EmployeeApprovedID",
+                "type": "long",
+                "doc": "A foreign key that links an invoice to the employee who approved it. Not NULL"
+              },
+              {
+                "name": "BalanceDue",
+                "type": "double",
+                "doc": "A double that defines how much of a certain currency (the specific currency can be found in the currency column and conversions should be made where possible) is being paid, this will represent expenses as all of the invoices will have been paid. Not NULL"
+              },
+              {
+                "name": "Currency",
+                "type": "string",
+                "doc": "A character that represents the currency the amount due should be paid in, e.g. $ = USD. Not NULL"
+              },
+              {
+                "name": "DueDate",
+                "type": "string",
+                "doc": "A string that show the date in the format yyyy-MM-dd, cannot be converted into a date, only a datetime, when converting cast it to datetime and then truncate it. Not NULL"
+              },
+              {
+                "name": "SortCode",
+                "type": "long",
+                "doc": "A number that represents the sort code of the bank account the money will be sent to. Not NULL"
+              },
+              {
+                "name": "AccountNumber",
+                "type": "long",
+                "doc": "A number that represents the sort account number of the bank account the money will be sent to. Not NULL"
+              },
+              {
+                "name": "PaymentTime",
+                "type": "string",
+                "doc": "A string that stores the date and time the payment was sent, in the format yyyy-MM-dd HH:mm:ss.SSS, cannot be compared with other dates or times via <, > or other arithmetic operators. Try converting it into a date first. Not NULL"
+              },
+              {
+                "name": "ItemExpected",
+                "type": "string",
+                "doc": "A string that describes the item that is being purchased. Not NULL"
+              },
+              {
+                "name": "QuantityExpected",
+                "type": "long",
+                "doc": "A long that describes how many of the item have been bought. Not NULL"
+              }
+            ]
+          }
+        }
+      }
+    },
+    {
+      "topic": "Deliveries",
+      "vars": {
+        "invoice": {
+          "_gen": "lookup",
+          "strategy": "last",
+          "topic": "Invoices",
+          "path": [
+            "value"
+          ]
+        }
+      },
+      "value": {
+        "DeliveryID": {
+          "_gen": "sequentialInteger"
+        },
+        "InvoiceID": {
+          "_gen": "var",
+          "var": "invoice",
+          "path": [
+            "InvoiceID"
+          ]
+        },
+        "Item": {
+          "_gen": "var",
+          "var": "invoice",
+          "path": [
+            "ItemExpected"
+          ]
+        },
+        "Quantity": {
+          "_gen": "var",
+          "var": "invoice",
+          "path": [
+            "QuantityExpected"
+          ]
+        }
+      },
+      "localConfigs": {
+        "events": {
+          "exactly": 730
+        },
+        "avroSchemaHint": {
+          "value": {
+            "type": "record",
+            "name": "Deliveries",
+            "fields": [
+              {
+                "name": "DeliveryID",
+                "type": "long",
+                "doc": "A unique ID that identifies a delivery. Not NULL"
+              },
+              {
+                "name": "InvoiceID",
+                "type": "long",
+                "doc": "A foreign key that links a delivery to an invoice. Not NULL"
+              },
+              {
+                "name": "Item",
+                "type": "string",
+                "doc": "A string that describes the item that has been delivered. Not NULL"
+              },
+              {
+                "name": "Quantity",
+                "type": "long",
+                "doc": "A big integer that equates to how many of the item were delivered. Not NULL"
+              }
+            ]
+          }
+        }
+      }
+    }
+  ],
+  "connections": {
+    "kafka": {
+      "kind": "kafka",
+      "producerConfigs": {
+        "bootstrap.servers": "kafka1:9092",
+        "key.serializer": "io.shadowtraffic.kafka.serdes.JsonSerializer",
+        "value.serializer": "io.confluent.kafka.serializers.KafkaAvroSerializer",
+        "schema.registry.url": "http://schema-registry:8081"
+      }
+    }
+  }
+}
