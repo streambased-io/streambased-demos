@@ -49,10 +49,21 @@ SQL queries can be run from here and the schema can be checked.
 
 ### Step 3: Communicate with the AI agent
 Navigate to `localhost:3000`.
-There is a sample query at the top that you may run, though you may run any query you like at the bottom of the screen.
+There is a sample query at the top that you may run, 
+though you may run any query you like at the bottom of the screen.
+
+The example explanation below contains some sample prompts
+that can be used to uncover the fraud taking place.
 
 ## Example Investigation:
 
+In this example we are going to try to track down a Fake Invoice Scam.
+
+This is a type of phishing attack where the attackers impersonate legitimate suppliers
+to trick organisations into paying fake invoices.
+
+We are going to use our AI assistant to catch instances of this fraud occurring in
+the dataset laid out below.
 ![Database_layout.png](media/Database_layout.png)
 
 [Example_Investigation.mov](media/Example_Investigation.mov)
@@ -68,6 +79,9 @@ The prompts that are run in the video above are:
 Technically the only scam that occurs here is the invoice that does not have a delivery attached to it.
 However, for the purposes of this demonstration that is not important.
 All that is being demonstrated is that the AI agent can search for these kinds of discrepancies.
+
+Have a further poke around using the AI assistant and see if you can find all of the discrepancies in the dataset.
+For example, we can tell that the dataset must have been designed very poorly as duplicates of primary keys can be found.
 
 ### Shutting down
 
