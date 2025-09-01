@@ -228,7 +228,7 @@
               {
                 "name": "PaymentTime",
                 "type": "string",
-                "doc": "A string that stores the date and time the payment was sent, in the format yyyy-MM-dd HH:mm:ss.SSS, cannot be compared with other dates or times via <, > or other arithmetic operators. Try converting it into a date first. Not NULL"
+                "doc": "A string that stores the date and time the payment was sent (can be combined with amountDue to work out expenses), in the format yyyy-MM-dd HH:mm:ss.SSS, cannot be compared with other dates or times via <, > or other arithmetic operators. Try casting it into a timestamp first, then truncating it using date_trunc if necessary. Not NULL"
               },
               {
                 "name": "ItemExpected",
