@@ -57,6 +57,12 @@ There is a sample query at the top that you may run, though you may run any quer
 
 [Example_Investigation.mov](media/Example_Investigation.mov)
 
+The prompts that are run in the video above are:
+
+1. Can you please give me a bar chart of monthly expenses?
+2. Please could you check if there are any duplicate invoices in the month with the highest expenses?
+3. Please now give me a list of the employees who approved the duplicate invoices, including their names and ids, you do not need to show duplicates
+
 ## Notes
 
 Technically the only scam that occurs here is the invoice that does not have a delivery attached to it.
