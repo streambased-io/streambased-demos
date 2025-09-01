@@ -83,6 +83,9 @@ All that is being demonstrated is that the AI agent can search for these kinds o
 Have a further poke around using the AI assistant and see if you can find all of the discrepancies in the dataset.
 For example, we can tell that the dataset must have been designed very poorly as duplicates of primary keys can be found.
 
+Furthermore, the LLM struggles with currency conversion so the bar chart shown is likely to be ver inaccurate 
+as it will be based only off amount due, regardless of currency (USD, GBP or EUR).
+
 ### Shutting down
 
 To stop the environment run:
