@@ -16,7 +16,7 @@ The example - docker-compose and configuration files are prepared for starting a
 To start the environment run:
 
 ```bash
-./bin/start.sh 9_Iceberg_Union
+./bin/start.sh 9_iceberg_union
 ```
 
 ### Step 2: Open PySpark Notebook

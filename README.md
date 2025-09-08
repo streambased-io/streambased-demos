@@ -32,7 +32,8 @@ This repository holds the following cases:
 6. [Introducing Iceberg](tree/main/cases/6_all_in_one) - This all-in-one demo shows the entire Streambased product suite including Kafka as a 
    filesystem, Kafka as Iceberg and Kafka directly to BI tools.
 7. [Streambased MCP](tree/main/cases/7_mcp) - Explore "Vibe coding for data" with Streambased MCP server and client.
-
+8. [Fake Invoice Scam](tree/main/cases/8_Fake_Invoice_Scam) - Example data discrepancy investigation with Streambased MCP
+9. [Iceberg HotSet + ColdSet union](tree/main/cases/9_iceberg_union) - Example of real-time Iceberg with physical ColdSet combined with Logical Projection HotSet using client-side Union.
 ## Executing a case
 
 To execute a demo run:
