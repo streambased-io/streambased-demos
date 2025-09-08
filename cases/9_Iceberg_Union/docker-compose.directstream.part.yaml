@@ -1,0 +1,86 @@
+  spark-iceberg:
+    image: tabulario/spark-iceberg:3.5.5_1.8.1
+    hostname: spark
+    container_name: spark-iceberg
+    volumes:
+      - ./spark/warehouse:/home/iceberg/warehouse
+      - ./spark/notebooks:/home/iceberg/notebooks/notebooks
+      - ./spark/spark-defaults.conf:/opt/spark/conf/spark-defaults.conf
+      - ./spark/jars/hadoop-aws-3.3.4.jar:/opt/spark/jars/hadoop-aws-3.3.4.jar
+      - ./spark/jars/aws-java-sdk-bundle-1.12.367.jar:/opt/spark/jars/aws-java-sdk-bundle-1.12.367.jar
+    environment:
+      - AWS_ACCESS_KEY_ID=dummyapi
+      - AWS_SECRET_ACCESS_KEY=dummysecret
+      - AWS_REGION=us-east-1
+    ports:
+      - 8888:8888
+      - 10000:10000
+      - 10001:10001
+      - 4040-4050:4040-4050
+
+  directstream:
+    image: streambased/directstream:demo-union
+    hostname: directstream
+    container_name: directstream
+    platform: linux/amd64
+    depends_on:
+      - shadowtraffic
+    restart: on-failure
+    volumes:
+      - "./directstream/etc/directstream.properties:/app/etc/directstream.properties"
+      - "./directstream/etc/logback.xml:/app/etc/logback.xml"
+    ports:
+      - 11000:11000
+      - 11001:11001
+
+  rest:
+    image: apache/iceberg-rest-fixture:1.8.1
+    container_name: iceberg-rest
+    ports:
+      - 8181:8181
+    environment:
+      - CATALOG_CATALOG__IMPL=org.apache.iceberg.jdbc.JdbcCatalog
+      - CATALOG_URI=jdbc:sqlite:file:/tmp/iceberg.db
+      - CATALOG_JDBC_USER=user
+      - CATALOG_JDBC_PASSWORD=password
+      - REST_PORT=8181
+      - AWS_ACCESS_KEY_ID=admin
+      - AWS_SECRET_ACCESS_KEY=password
+      - AWS_REGION=us-east-1
+      - CATALOG_WAREHOUSE=s3://warehouse/
+      - CATALOG_IO__IMPL=org.apache.iceberg.aws.s3.S3FileIO
+      - CATALOG_S3_ENDPOINT=http://minio:9000
+
+  minio:
+    image: minio/minio
+    container_name: minio
+    hostname: minio
+    networks:
+      default:
+        aliases:
+          - warehouse.minio
+    environment:
+      - MINIO_ROOT_USER=admin
+      - MINIO_ROOT_PASSWORD=password
+      - MINIO_DOMAIN=minio
+    ports:
+      - 9001:9001
+      - 9000:9000
+    command: ["server", "/data", "--console-address", ":9001"]
+  mc:
+    depends_on:
+      - minio
+    image: minio/mc:RELEASE.2025-03-12T17-29-24Z
+    container_name: mc
+    environment:
+      - AWS_ACCESS_KEY_ID=admin
+      - AWS_SECRET_ACCESS_KEY=password
+      - AWS_REGION=us-east-1
+    entrypoint: |
+      /bin/sh -c "
+      until (/usr/bin/mc config host add minio http://minio:9000 admin password) do echo '...waiting...' && sleep 1; done;
+      /usr/bin/mc rm -r --force minio/warehouse;
+      /usr/bin/mc mb minio/warehouse;
+      /usr/bin/mc policy set public minio/warehouse;
+      tail -f /dev/null
+      "
