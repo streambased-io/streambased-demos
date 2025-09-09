@@ -76,7 +76,10 @@ then
 else
   cat $SCRIPT_DIR/../environment/docker-compose.directstream.part.yaml >> $SCRIPT_DIR/../environment/docker-compose.yaml
 fi
-
+if [ ! -f "$SCRIPT_DIR/../environment/spark/jars" ]
+then
+  mkdir "$SCRIPT_DIR/../environment/spark/jars"
+fi
 # download spark S3A jars if not present
 if [ ! -f "$SCRIPT_DIR/../environment/spark/jars/aws-java-sdk-bundle-1.12.367.jar" ]
 then
@@ -87,7 +90,7 @@ if [ ! -f "$SCRIPT_DIR/../environment/spark/jars/hadoop-aws-3.3.4.jar" ]
 then
   curl https://repo1.maven.org/maven2/org/apache/hadoop/hadoop-aws/3.3.4/hadoop-aws-3.3.4.jar > "$SCRIPT_DIR/../environment/spark/jars/hadoop-aws-3.3.4.jar"
 fi
-
+exit
 # start services
 cd $SCRIPT_DIR/../environment
 docker-compose stop
