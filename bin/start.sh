@@ -90,7 +90,7 @@ if [ ! -f "$SCRIPT_DIR/../environment/spark/jars/hadoop-aws-3.3.4.jar" ]
 then
   curl https://repo1.maven.org/maven2/org/apache/hadoop/hadoop-aws/3.3.4/hadoop-aws-3.3.4.jar > "$SCRIPT_DIR/../environment/spark/jars/hadoop-aws-3.3.4.jar"
 fi
-exit
+
 # start services
 cd $SCRIPT_DIR/../environment
 docker-compose stop
