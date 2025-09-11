@@ -1,0 +1,416 @@
+{
+  "generators": [
+    {
+      "topic": "customers",
+      "value": {
+        "CustomerID": {
+          "_gen": "string",
+          "expr": "#{Number.numberBetween '100','200000'}"
+        },
+        "Name": {
+          "_gen": "string",
+          "expr": "#{Name.full_name}"
+        },
+        "Address": {
+          "_gen": "string",
+          "expr": "#{Address.full_address}"
+        },
+        "Email": {
+          "_gen": "string",
+          "expr": "#{Internet.email_address}"
+        },
+        "PhoneNo": {
+          "_gen": "string",
+          "expr": "#{PhoneNumber.phone_number}"
+        }
+      },
+      "localConfigs": {
+        "events": {
+          "exactly": 10000
+        }
+      }
+    },
+    {
+      "topic": "branches",
+      "value": {
+        "BranchID": {
+          "_gen": "sequentialInteger",
+          "startingFrom": 100
+        },
+        "BranchName": {
+          "_gen": "string",
+          "expr": "#{Company.name}"
+        },
+        "Address": {
+          "_gen": "string",
+          "expr": "#{Address.full_address}"
+        },
+        "PhoneNo": {
+          "_gen": "string",
+          "expr": "#{PhoneNumber.phone_number}"
+        }
+      },
+      "localConfigs": {
+        "events": {
+          "exactly": 30
+        }
+      }
+    },
+    {
+      "topic": "accounts",
+      "value": {
+        "AccountID": {
+          "_gen": "string",
+          "expr": "#{Number.numberBetween '100','600000'}"
+        },
+        "CustomerID": {
+          "_gen": "lookup",
+          "topic": "customers",
+          "path": [
+            "value",
+            "CustomerID"
+          ]
+        },
+        "AccountType": {
+          "_gen": "oneOf",
+          "choices": [
+            "Savings",
+            "Checking",
+            "Loan"
+          ]
+        },
+        "BranchID": {
+          "_gen": "lookup",
+          "topic": "branches",
+          "path": [
+            "value",
+            "BranchID"
+          ]
+        },
+        "IsActive": {
+          "_gen": "boolean"
+        }
+      },
+      "localConfigs": {
+        "events": {
+          "exactly": 10000
+        }
+      }
+    },
+    {
+      "topic": "transactions_old",
+      "vars": {
+        "TransactionType": {
+          "_gen": "oneOf",
+          "choices": [
+            "Deposit",
+            "Withdrawal"
+          ]
+        }
+      },
+      "value": {
+        "TransactionID": {
+          "_gen": "uuid",
+          "var": "TransactionID"
+        },
+        "AccountID": {
+          "_gen": "lookup",
+          "topic": "accounts",
+          "path": [
+            "value",
+            "AccountID"
+          ]
+        },
+        "TransactionType": {
+          "_gen": "var",
+          "var": "TransactionType"
+        },
+        "TransactionAmount": {
+          "_gen": "uniformDistribution",
+          "bounds": [
+            0,
+            10000
+          ],
+          "decimals": 2
+        },
+        "BranchID": {
+          "_gen": "lookup",
+          "topic": "branches",
+          "path": [
+            "value",
+            "BranchID"
+          ]
+        },
+        "FraudRiskScore": {
+          "_gen": "uniformDistribution",
+          "bounds": [
+            1,
+            10
+          ]
+        },
+        "TransactionTime": {
+          "_gen": "sequentialInteger",
+          "startingFrom": 1755687600000000,
+          "advanceBy": 400000
+        }
+      },
+      "localConfigs": {
+        "events": {
+          "exactly": 500000
+        },
+        "avroSchemaHint": {
+          "value": {
+            "type": "record",
+            "name": "transactionsValue",
+            "fields": [
+              {
+                "name": "TransactionID",
+                "type": "string"
+              },
+              {
+                "name": "AccountID",
+                "type": "string"
+              },
+              {
+                "name": "TransactionType",
+                "type": "string"
+              },
+              {
+                "name": "TransactionAmount",
+                "type": "double"
+              },
+              {
+                "name": "BranchID",
+                "type": "long"
+              },
+              {
+                "name": "FraudRiskScore",
+                "type": "double"
+              },
+              {
+                "name": "TransactionTime",
+                "type": {
+                  "type": "long",
+                  "logicalType": "timestamp-micros"
+                }
+              }
+            ]
+          }
+        }
+      }
+    },
+    {
+      "topic": "transactions",
+      "vars": {
+        "TransactionType": {
+          "_gen": "oneOf",
+          "choices": [
+            "Deposit",
+            "Withdrawal"
+          ]
+        }
+      },
+      "value": {
+        "TransactionID": {
+          "_gen": "uuid",
+          "var": "TransactionID"
+        },
+        "AccountID": {
+          "_gen": "lookup",
+          "topic": "accounts",
+          "path": [
+            "value",
+            "AccountID"
+          ]
+        },
+        "TransactionType": {
+          "_gen": "var",
+          "var": "TransactionType"
+        },
+        "TransactionAmount": {
+          "_gen": "uniformDistribution",
+          "bounds": [
+            0,
+            10000
+          ],
+          "decimals": 2
+        },
+        "BranchID": {
+          "_gen": "lookup",
+          "topic": "branches",
+          "path": [
+            "value",
+            "BranchID"
+          ]
+        },
+        "FraudRiskScore": {
+          "_gen": "uniformDistribution",
+          "bounds": [
+            1,
+            10
+          ]
+        },
+        "TransactionTime": {
+          "_gen": "sequentialInteger",
+          "startingFrom": 1756982600000000,
+          "advanceBy": 400000
+        }
+      },
+      "localConfigs": {
+        "events": {
+          "exactly": 100
+        },
+        "avroSchemaHint": {
+          "value": {
+            "type": "record",
+            "name": "transactionsValue",
+            "fields": [
+              {
+                "name": "TransactionID",
+                "type": "string"
+              },
+              {
+                "name": "AccountID",
+                "type": "string"
+              },
+              {
+                "name": "TransactionType",
+                "type": "string"
+              },
+              {
+                "name": "TransactionAmount",
+                "type": "double"
+              },
+              {
+                "name": "BranchID",
+                "type": "long"
+              },
+              {
+                "name": "FraudRiskScore",
+                "type": "double"
+              },
+              {
+                "name": "TransactionTime",
+                "type": {
+                  "type": "long",
+                  "logicalType": "timestamp-micros"
+                }
+              }
+            ]
+          }
+        }
+      }
+    },
+    {
+      "topic": "transactions",
+      "vars": {
+        "TransactionType": {
+          "_gen": "oneOf",
+          "choices": [
+            "Deposit",
+            "Withdrawal"
+          ]
+        }
+      },
+      "value": {
+        "TransactionID": {
+          "_gen": "uuid",
+          "var": "TransactionID"
+        },
+        "AccountID": {
+          "_gen": "lookup",
+          "topic": "accounts",
+          "path": [
+            "value",
+            "AccountID"
+          ]
+        },
+        "TransactionType": {
+          "_gen": "var",
+          "var": "TransactionType"
+        },
+        "TransactionAmount": {
+          "_gen": "uniformDistribution",
+          "bounds": [
+            0,
+            10000
+          ],
+          "decimals": 2
+        },
+        "BranchID": {
+          "_gen": "lookup",
+          "topic": "branches",
+          "path": [
+            "value",
+            "BranchID"
+          ]
+        },
+        "FraudRiskScore": {
+          "_gen": "uniformDistribution",
+          "bounds": [
+            1,
+            10
+          ]
+        },
+        "TransactionTime": {
+          "_gen": "sequentialInteger",
+          "startingFrom": 1756983600000000,
+          "advanceBy": 400000
+        }
+      },
+      "localConfigs": {
+        "throughput": 1,
+        "avroSchemaHint": {
+          "value": {
+            "type": "record",
+            "name": "transactionsValue",
+            "fields": [
+              {
+                "name": "TransactionID",
+                "type": "string"
+              },
+              {
+                "name": "AccountID",
+                "type": "string"
+              },
+              {
+                "name": "TransactionType",
+                "type": "string"
+              },
+              {
+                "name": "TransactionAmount",
+                "type": "double"
+              },
+              {
+                "name": "BranchID",
+                "type": "long"
+              },
+              {
+                "name": "FraudRiskScore",
+                "type": "double"
+              },
+              {
+                "name": "TransactionTime",
+                "type": {
+                  "type": "long",
+                  "logicalType": "timestamp-micros"
+                }
+              }
+            ]
+          }
+        }
+      }
+    }
+  ],
+  "connections": {
+    "kafka": {
+      "kind": "kafka",
+      "producerConfigs": {
+        "bootstrap.servers": "kafka1:9092",
+        "key.serializer": "io.confluent.kafka.serializers.KafkaAvroSerializer",
+        "value.serializer": "io.confluent.kafka.serializers.KafkaAvroSerializer",
+        "schema.registry.url": "http://schema-registry:8081"
+      }
+    }
+  }
+}
