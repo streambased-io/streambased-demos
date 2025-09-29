@@ -19,7 +19,7 @@
       - 4040-4050:4040-4050
 
   directstream:
-    image: streambased/directstream:demo-union
+    image: streambased/dev-directstream:latest
     hostname: directstream
     container_name: directstream
     platform: linux/amd64
