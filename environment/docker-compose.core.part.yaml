@@ -81,22 +81,6 @@ services:
     command: --config /etc/shadowtraffic/datagen.json --seed 1234
     restart: on-failure
 
-  superset:
-    build:
-      context: ./superset
-      dockerfile: Dockerfile
-    container_name: superset
-    depends_on:
-      schema-registry:
-        condition: service_healthy
-    platform: linux/amd64
-    environment:
-      - ADMIN_USERNAME=admin
-      - ADMIN_EMAIL=admin@superset.com
-      - ADMIN_PASSWORD=admin
-    ports:
-      - '8088:8088'
-
   akhq:
     image: tchiotludo/akhq:latest
     container_name: akhq

@@ -34,7 +34,15 @@ chmod o+rw $SCRIPT_DIR/../environment/pipeline
 
 
 # fetch shadowtraffic license
-curl  https://raw.githubusercontent.com/ShadowTraffic/shadowtraffic-examples/refs/heads/master/free-trial-license.env > $SCRIPT_DIR/../environment/shadowtraffic/license.env
+#curl  https://raw.githubusercontent.com/ShadowTraffic/shadowtraffic-examples/refs/heads/master/free-trial-license.env > $SCRIPT_DIR/../environment/shadowtraffic/license.env
+echo 'export LICENSE_ID="6d91b1c9-4d6b-4519-9f4b-90ff52d6f3cb"' > $SCRIPT_DIR/../environment/shadowtraffic/license.env
+echo 'export LICENSE_EMAIL="michael+examples@shadowtraffic.io"' >> $SCRIPT_DIR/../environment/shadowtraffic/license.env
+echo 'export LICENSE_ORGANIZATION="ShadowTraffic"' >> $SCRIPT_DIR/../environment/shadowtraffic/license.env
+echo 'export LICENSE_EDITION="ShadowTraffic Free Trial"' >> $SCRIPT_DIR/../environment/shadowtraffic/license.env
+echo 'export LICENSE_EXPIRATION="2025-10-22"' >> $SCRIPT_DIR/../environment/shadowtraffic/license.env
+echo 'export LICENSE_SIGNATURE="FVAXNQ9rW8aAS9dXasLorBHEky/jOTFIU3MC11VI++aWPqfnP9XPVMXwh+UvC3uwQfed+PN97jQLnI7N7vn0E8eMc05lMQFCKadwUvJiZmzHBJ3kOjgxKaUy5YH0JKgNdXKuzxFdEyDljd859Ho3kLmwO3zK3YAghafiGDeWIAKvkcGBHKLw7pt71Tq3PVhXt+iJwHVVgI42pOk0k5YnqcnlGrdNndGWi6jn9jcqqnd9r32wmEVSrb32lKWSPK8zo3eHp5A0fXrFv69hja0bE0zwDIekuNzatJ0jOcOJ4y5rQ9fCnXNLz8gL2B+0wWQUR/L3LtA05lSlGb/7LyXImg=="' >> $SCRIPT_DIR/../environment/shadowtraffic/license.env
+
+
 
 # make docker compose
 cat $SCRIPT_DIR/../environment/docker-compose.core.part.yaml > $SCRIPT_DIR/../environment/docker-compose.yaml
@@ -95,5 +103,5 @@ fi
 cd $SCRIPT_DIR/../environment
 docker-compose stop
 docker-compose rm
-docker-compose pull
+#docker-compose pull
 docker-compose up -d --build

@@ -8,7 +8,7 @@
 
   streambased-mcp-client:
     hostname: streambased-mcp-client
-    image: "streambased/mcp-client:latest"
+    image: "local/mcp-client:latest"
     ports:
       - "3000:3000"
     env_file: "mcp/mcp.env"
