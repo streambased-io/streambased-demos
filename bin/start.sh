@@ -76,7 +76,7 @@ then
 else
   cat $SCRIPT_DIR/../environment/docker-compose.directstream.part.yaml >> $SCRIPT_DIR/../environment/docker-compose.yaml
 fi
-if [ ! -f "$SCRIPT_DIR/../environment/spark/jars" ]
+if [ ! -d "$SCRIPT_DIR/../environment/spark/jars" ]
 then
   mkdir "$SCRIPT_DIR/../environment/spark/jars"
 fi
