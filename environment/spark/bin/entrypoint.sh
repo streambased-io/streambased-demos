@@ -18,7 +18,7 @@
 # under the License.
 
 ## notebook dependencies
-pip install grpc grpcio google protobuf grpcio-status
+pip install grpcio google protobuf grpcio-status
 
 start-master.sh -p 7077
 start-worker.sh spark://spark-iceberg:7077
