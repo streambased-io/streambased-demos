@@ -98,7 +98,7 @@
       }
     },
     {
-      "topic": "transactions_old",
+      "topic": "transactions",
       "vars": {
         "TransactionType": {
           "_gen": "oneOf",
@@ -213,108 +213,6 @@
       "localConfigs": {
         "events": {
           "exactly": 1
-        },
-        "avroSchemaHint": {
-          "value": {
-            "type": "record",
-            "name": "transactionsValue",
-            "fields": [
-              {
-                "name": "TransactionID",
-                "type": "string"
-              },
-              {
-                "name": "AccountID",
-                "type": "string"
-              },
-              {
-                "name": "TransactionType",
-                "type": "string"
-              },
-              {
-                "name": "TransactionAmount",
-                "type": "double"
-              },
-              {
-                "name": "BranchID",
-                "type": "long"
-              },
-              {
-                "name": "FraudRiskScore",
-                "type": "double"
-              },
-              {
-                "name": "TransactionTime",
-                "type": {
-                  "type": "long",
-                  "logicalType": "timestamp-micros"
-                }
-              }
-            ]
-          }
-        }
-      }
-    },
-    {
-      "topic": "transactions",
-      "vars": {
-        "TransactionType": {
-          "_gen": "oneOf",
-          "choices": [
-            "Deposit",
-            "Withdrawal"
-          ]
-        }
-      },
-      "value": {
-        "TransactionID": {
-          "_gen": "uuid",
-          "var": "TransactionID"
-        },
-        "AccountID": {
-          "_gen": "lookup",
-          "topic": "accounts",
-          "path": [
-            "value",
-            "AccountID"
-          ]
-        },
-        "TransactionType": {
-          "_gen": "var",
-          "var": "TransactionType"
-        },
-        "TransactionAmount": {
-          "_gen": "uniformDistribution",
-          "bounds": [
-            0,
-            10000
-          ],
-          "decimals": 2
-        },
-        "BranchID": {
-          "_gen": "lookup",
-          "topic": "branches",
-          "path": [
-            "value",
-            "BranchID"
-          ]
-        },
-        "FraudRiskScore": {
-          "_gen": "uniformDistribution",
-          "bounds": [
-            1,
-            10
-          ]
-        },
-        "TransactionTime": {
-          "_gen": "sequentialInteger",
-          "startingFrom": 1756982600000000,
-          "advanceBy": 400000
-        }
-      },
-      "localConfigs": {
-        "events": {
-          "exactly": 100
         },
         "avroSchemaHint": {
           "value": {
