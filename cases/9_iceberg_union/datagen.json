@@ -200,6 +200,62 @@
       }
     },
     {
+      "topic": "transactions_old",
+      "value": {
+        "TransactionID": "aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaaa",
+        "AccountID": "1",
+        "TransactionType": "Deposit",
+        "TransactionAmount": 10.00,
+        "BranchID": 1,
+        "FraudRiskScore": 1,
+        "TransactionTime": 1755687600000000
+      },
+      "localConfigs": {
+        "events": {
+          "exactly": 1
+        },
+        "avroSchemaHint": {
+          "value": {
+            "type": "record",
+            "name": "transactionsValue",
+            "fields": [
+              {
+                "name": "TransactionID",
+                "type": "string"
+              },
+              {
+                "name": "AccountID",
+                "type": "string"
+              },
+              {
+                "name": "TransactionType",
+                "type": "string"
+              },
+              {
+                "name": "TransactionAmount",
+                "type": "double"
+              },
+              {
+                "name": "BranchID",
+                "type": "long"
+              },
+              {
+                "name": "FraudRiskScore",
+                "type": "double"
+              },
+              {
+                "name": "TransactionTime",
+                "type": {
+                  "type": "long",
+                  "logicalType": "timestamp-micros"
+                }
+              }
+            ]
+          }
+        }
+      }
+    },
+    {
       "topic": "transactions",
       "vars": {
         "TransactionType": {

@@ -13,5 +13,7 @@ environment/pipeline/**
 environment/scripts/**
 environment/mcp/**
 environment/docker-compose.yaml
+environment/spark/jars/**
 
 cases/7_mcp/mcp_internal.env
+

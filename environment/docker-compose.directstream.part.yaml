@@ -6,15 +6,18 @@
       - ./spark/warehouse:/home/iceberg/warehouse
       - ./spark/notebooks:/home/iceberg/notebooks/notebooks
       - ./spark/spark-defaults.conf:/opt/spark/conf/spark-defaults.conf
+      - ./spark/bin/entrypoint.sh:/opt/spark/entrypoint.sh
     environment:
       - AWS_ACCESS_KEY_ID=dummyapi
       - AWS_SECRET_ACCESS_KEY=dummysecret
       - AWS_REGION=us-east-1
     ports:
+      - 7077:7077
       - 8888:8888
       - 10000:10000
       - 10001:10001
       - 4040-4050:4040-4050
+      - 15002:15002
 
   directstream:
     image: streambased/directstream:demo
