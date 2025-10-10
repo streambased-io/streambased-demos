@@ -13,12 +13,16 @@
       - AWS_ACCESS_KEY_ID=dummyapi
       - AWS_SECRET_ACCESS_KEY=dummysecret
       - AWS_REGION=us-east-1
+      - SPARK_MASTER_HOST=spark-iceberg
+      - SPARK_MASTER_PORT=7077
+      - SPARK_MASTER_WEBUI_PORT=8180
     ports:
       - 8888:8888
       - 10000:10000
       - 10001:10001
       - 4040-4050:4040-4050
       - 15002:15002
+      - 8180:8180
 
   directstream:
     image: streambased/dev-directstream:latest

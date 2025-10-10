@@ -26,7 +26,7 @@ start-history-server.sh
 start-thriftserver.sh  --driver-java-options "-Dderby.system.home=/tmp/derby"
 
 ## start spark-connect
-start-connect-server.sh --packages org.apache.spark:spark-connect_2.12:3.5.5
+start-connect-server.sh --packages org.apache.spark:spark-connect_2.12:3.5.5 --master spark://spark-iceberg:7077 --executor-memory 8g
 
 # Entrypoint, for example notebook, pyspark or spark-sql
 if [[ $# -gt 0 ]] ; then

@@ -18,6 +18,7 @@
       - 10001:10001
       - 4040-4050:4040-4050
       - 15002:15002
+      - 8180:8180
 
   directstream:
     image: streambased/directstream:demo
