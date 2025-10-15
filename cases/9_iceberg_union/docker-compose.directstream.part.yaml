@@ -39,6 +39,14 @@
       - 11000:11000
       - 11001:11001
 
+  hyperstream:
+    image: local/streambased-hyperstream:latest
+    container_name: hyperstream
+    ports:
+      - 9088:9088
+    environment:
+      - SPARK_CONNECT_URL=sc://spark-iceberg:15002
+
   rest:
     image: apache/iceberg-rest-fixture:1.8.1
     container_name: iceberg-rest
