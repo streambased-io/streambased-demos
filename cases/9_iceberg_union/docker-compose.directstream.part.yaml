@@ -25,7 +25,7 @@
       - 8180:8180
 
   directstream:
-    image: streambased/dev-directstream:latest
+    image: streambased/directstream:overlay-demo
     hostname: directstream
     container_name: directstream
     platform: linux/amd64
@@ -38,9 +38,11 @@
     ports:
       - 11000:11000
       - 11001:11001
+    environment:
+      - AWS_REGION=us-east-1
 
   hyperstream:
-    image: local/streambased-hyperstream:latest
+    image: streambased/nola-hyperstream:latest
     container_name: hyperstream
     ports:
       - 9088:9088
@@ -96,5 +98,8 @@
       /usr/bin/mc rm -r --force minio/warehouse;
       /usr/bin/mc mb minio/warehouse;
       /usr/bin/mc policy set public minio/warehouse;
+      /usr/bin/mc rm -r --force minio/coldset;
+      /usr/bin/mc mb minio/coldset;
+      /usr/bin/mc policy set public minio/coldset;
       tail -f /dev/null
       "
