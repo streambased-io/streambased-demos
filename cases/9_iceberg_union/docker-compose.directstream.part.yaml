@@ -42,12 +42,15 @@
       - AWS_REGION=us-east-1
 
   hyperstream:
-    image: streambased/nola-hyperstream:latest
+    image: streambased/hyperstream:overlay-demo
     container_name: hyperstream
     ports:
       - 9088:9088
     environment:
       - SPARK_CONNECT_URL=sc://spark-iceberg:15002
+      - COLD_SET_SCHEMA=direct.coldset
+      - HOT_SET_SCHEMA=isk.hotset
+      - UNIFIED_SET_SCHEMA=isk.merged
 
   rest:
     image: apache/iceberg-rest-fixture:1.8.1
